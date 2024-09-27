@@ -1,0 +1,9 @@
+.configuration-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: black;
+  align-items: center;
+  background-color: #F2F7FC;
+}
