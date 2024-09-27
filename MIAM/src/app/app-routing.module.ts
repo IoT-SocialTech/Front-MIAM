@@ -15,7 +15,7 @@ const routes: Routes = [
   { path: 'register', component: RegisterFormComponent },
   { path: 'login', component: LoginFormComponent},
   { path: 'recovery-password', component: RecoveryPasswordFormComponent},
-  { path: 'dashboard', component: DashboardComponent},
+  
   {
     path: 'MIAM',
     component: SidenavComponent,
