@@ -1,0 +1,113 @@
+.sidenav-container {
+  height: 100vh;
+}
+
+.sidenav {
+  width: 70px;
+  background-color: #1C2D3D;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  padding-top: 1rem;
+}
+
+.sidenav-list {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+}
+
+.logo-link {
+  display: flex;
+  justify-content: center; /* Centrar el logo horizontalmente */
+  padding: 1rem 0; /* Añadir espacio alrededor del logo */
+}
+
+.logo-img {
+  width: 40px;
+  height: auto;
+  border-radius: 50%;
+  background-color: white; /*quitar si ya viene el logo blanco*/
+}
+
+.nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.nav-list li {
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.nav-list a {
+  display: flex;
+  flex-direction: column; /* Alinear ícono y texto en columna */
+  align-items: center; /* Centrar ícono y texto */
+  justify-content: center; /* Centrar verticalmente */
+  padding: 0.5rem 0; /* Reducir el padding vertical */
+  color: #B6BEC5; /* Color del texto */
+  text-decoration: none; /* Eliminar subrayado */
+}
+
+.nav-list a.active {
+  background-color: #5C9BD5; /* Fondo para ítem activo */
+  border-radius: 8px; /* Bordes redondeados */
+  width: 100%; /* Ocupar todo el ancho del sidenav */
+  display: flex;
+  flex-direction: column; /* Alinear ícono y texto en columna */
+  align-items: center;
+  color: white/* Centrar ícono y texto */
+}
+
+.nav-list a mat-icon {
+  margin-top: 0.5rem; /* Eliminar margen derecho */
+  margin-bottom: 0.5rem; /* Espacio debajo del ícono */
+}
+
+
+.bottom-nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bottom-nav-list li {
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.bottom-nav-list a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0;
+  color: #B6BEC5;
+  text-decoration: none;
+}
+
+.bottom-nav-list a.active {
+  background-color: #5C9BD5;
+  border-radius: 8px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white
+}
+
+.bottom-nav-list a mat-icon {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
