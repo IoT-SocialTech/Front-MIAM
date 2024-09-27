@@ -8,7 +8,7 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = `${environment.apiUrl}/accounts`;
+  private apiUrl = `${environment.apiUrl}/accounts.json`;
   private isAuthenticated: boolean = false;
 
   constructor(private http: HttpClient, private router: Router) { }
