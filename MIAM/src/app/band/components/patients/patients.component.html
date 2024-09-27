@@ -1,0 +1,55 @@
+<div class="patients-container">
+  <!-- Sidebar con la lista de pacientes -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h3>Patients</h3>
+      <button mat-raised-button color="primary" class="add-patient-button">+ Add new patient</button>
+    </div>
+    <div class="patient-list">
+      <div *ngFor="let patient of patients" (click)="selectPatient(patient)" class="patient-item" [class.selected]="selectedPatient?.id === patient.id">
+        <span>Patient: {{ patient.name }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel de detalles del paciente -->
+  <div class="details-panel">
+    <div *ngIf="selectedPatient; else noPatientSelected">
+      <div class="details-header">
+        <mat-form-field class="patient-input">
+          <mat-label>Name</mat-label>
+          <input matInput [(ngModel)]="selectedPatient.name" />
+        </mat-form-field>
+        <mat-form-field class="patient-input">
+          <mat-label>Address</mat-label>
+          <input matInput [(ngModel)]="selectedPatient.address" />
+        </mat-form-field>
+      </div>
+
+      <div class="details-info">
+        <mat-form-field class="patient-input">
+          <mat-label>Age</mat-label>
+          <input matInput type="number" [(ngModel)]="selectedPatient.age" />
+        </mat-form-field>
+        <mat-form-field class="patient-input">
+          <mat-label>ID</mat-label>
+          <input matInput [(ngModel)]="selectedPatient.id" />
+        </mat-form-field>
+        <mat-form-field class="patient-input">
+          <mat-label>Account ID</mat-label>
+          <input matInput [(ngModel)]="selectedPatient.Account_id" />
+        </mat-form-field>
+      </div>
+
+      <!-- Botón de eliminación de paciente -->
+      <button mat-raised-button color="warn" class="delete-button" (click)="deletePatient(selectedPatient)">
+        Delete patient
+      </button>
+      <button mat-raised-button color="primary" class="save-button" (click)="savePatient()">Save</button>
+    </div>
+
+    <ng-template #noPatientSelected>
+      <p>Please select a patient to see details.</p>
+    </ng-template>
+  </div>
+</div>
