@@ -1,0 +1,42 @@
+<div class="register">
+  <div class="register-box">
+    <div class="register-header">
+      <h2>Create Account</h2>
+      <p>Please fill in the details to create an account.</p>
+    </div>
+    <form class="register-form" (ngSubmit)="onSubmit()">
+      <mat-form-field class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" [(ngModel)]="email" name="email" required>
+      </mat-form-field>
+
+      <mat-form-field class="full-width">
+        <mat-label>Phone Number</mat-label>
+        <input matInput type="tel" [(ngModel)]="phoneNumber" name="phoneNumber" pattern="[0-9]{10}" required>
+        <mat-hint>Format: 999999999</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field class="full-width">
+        <mat-label>Password</mat-label>
+        <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="password" name="password" required>
+        <button mat-icon-button matSuffix (click)="togglePasswordVisibility()" type="button">
+          <mat-icon>{{ hidePassword ? 'visibility' : 'visibility_off' }}</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <mat-form-field class="full-width">
+        <mat-label>Confirm Password</mat-label>
+        <input matInput [type]="hidePassword ? 'password' : 'text'" [(ngModel)]="confirmPassword" name="confirmPassword" required>
+        <button mat-icon-button matSuffix (click)="togglePasswordVisibility()" type="button">
+          <mat-icon>{{ hidePassword ? 'visibility' : 'visibility_off' }}</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <button class="register-button">Register</button>
+    </form>
+
+    <div class="back-to-login">
+      <p>Already have an account? <a href="/login">Back to Login</a></p>
+    </div>
+  </div>
+</div>
