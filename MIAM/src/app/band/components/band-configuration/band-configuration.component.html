@@ -1,4 +1,150 @@
 <div class="band-config-container">
-  <h1>Welcome to the Band configuration!</h1>
-  <p>Add your band configuration content here.</p>
+  <div class="container-padding">
+    <h1 class="title">Band Configuration</h1>
+  </div>
+
+  <div class="main-container-row">
+    <ul class="band-patients-list" *ngIf="patients.length > 0; else noPatients">
+      <li class="patient" *ngFor="let patient of patients" (click)="selectPatient(patient)">
+        <p>ID: {{ patient.id }}</p>
+        <p>Patient: {{ patient.name }}</p>
+      </li>
+    </ul>
+  
+    <ng-template #noPatients>
+      <p>No patients available</p> 
+    </ng-template>
+  
+    <div class="patient-band-configuration" *ngIf="selectedPatient" >
+      <div class="info-section">
+        <div class="section-column">
+          <p>ID: {{ selectedPatient.id }}</p>
+          <p>Battery: 80%</p>
+        </div>
+        <div class="section-column">
+          <p>Status: Synchronized </p>
+          <div class="section-row">
+            <p>Last Sync: 2024-09-18 18:05</p>
+            <p> Sync now</p>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="patient-section">
+        <h3>Patient</h3>
+        <div class="section-row">
+          <p style="font-weight: bold;">Name:</p>
+          <p>Maria Carrillo</p>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="caregiver-section">
+        <h3>Caregiver</h3>
+        <div class="section-row">
+          <p style="font-weight: bold;">Assigned to:</p>
+          <p>Carolina Suarez</p>
+        </div>
+        <div class="section-row">
+          <p style="font-weight: bold;">Alerts:</p>
+          <div class="alerts">
+            <mat-checkbox class="caregiver-temperature-checkbox">
+              <span>Alert if temperature is below</span>
+              <mat-form-field appearance="fill" style="width: 80px; margin: 0 5px;">
+                <input matInput type="number" placeholder="°C" />
+              </mat-form-field>
+              <span>°C or higher than</span>
+              <mat-form-field appearance="fill" style="width: 80px;">
+                <input matInput type="number" placeholder="°C" />
+              </mat-form-field>
+              <span>°C </span>
+            </mat-checkbox>
+
+            <mat-checkbox class="caregiver-pulse-checkbox">
+              <span>Alert if pulse is below</span>
+              <mat-form-field appearance="fill" style="width: 80px;">
+                <input matInput type="number" placeholder="bpm" />
+              </mat-form-field>
+              <span>bpm or higher than</span>
+              <mat-form-field appearance="fill" style="width: 60px;">
+                <input matInput type="number" placeholder="bpm" />
+              </mat-form-field>
+              <span>bpm</span>
+            </mat-checkbox>
+
+            <mat-checkbox class="caregiver-fall-checkbox">
+              Alert me if fall risk is high
+            </mat-checkbox>
+
+          </div>  
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="relative-section">
+        <h3>Relative</h3>
+        <div class="section-row">
+          <p style="font-weight: bold;">Related to:</p>
+          <div class="section-row">
+            <p>Carolina Suarez</p>
+            <a mat-fab extended routerLink=".">
+              <mat-icon>delete</mat-icon>
+              Remove relative
+            </a>
+          </div>
+        </div>
+        <div class="section-row">
+          <p style="font-weight: bold;">Alerts:</p>
+          <div class="alerts">
+            <mat-checkbox class="relative-temperature-checkbox">
+              <span>Alert if temperature is below</span>
+              <mat-form-field appearance="fill" style="width: 80px; margin: 0 5px;">
+                <input matInput type="number" placeholder="°C" />
+              </mat-form-field>
+              <span>°C or higher than</span>
+              <mat-form-field appearance="fill" style="width: 80px;">
+                <input matInput type="number" placeholder="°C" />
+              </mat-form-field>
+              <span>°C </span>
+            </mat-checkbox>
+
+            <mat-checkbox class="relative-pulse-checkbox">
+              <span>Alert if pulse is below</span>
+              <mat-form-field appearance="fill" style="width: 80px;">
+                <input matInput type="number" placeholder="bpm" />
+              </mat-form-field>
+              <span>bpm or higher than</span>
+              <mat-form-field appearance="fill" style="width: 60px;">
+                <input matInput type="number" placeholder="bpm" />
+              </mat-form-field>
+              <span>bpm</span>
+            </mat-checkbox>
+
+            <mat-checkbox class="relative-fall-checkbox">
+              Alert me if fall risk is high
+            </mat-checkbox>
+
+          </div>  
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="buttons-section">
+        <div class="section-row">
+          <a mat-fab extended routerLink=".">
+            <mat-icon>delete</mat-icon>
+            Reset band
+          </a>
+          <p>Resetting this band will unlink all patient data.</p>
+        </div>
+        <button type="submit" class="save-button"> Save </button>
+      </div>
+    </div>
+  </div>
+
 </div>

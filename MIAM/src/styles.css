@@ -41,5 +41,101 @@ body { margin: 0; font-family: Inter, sans-serif !important;}
   border-color: rgb(0 0 0 / 40%);
 }
 
+.alerts .mat-mdc-checkbox .mdc-form-field{
+  color: #4f4f4f;
+}
 
+.alerts .mat-mdc-form-field-bottom-align::before{
+  content: none;
+}
 
+.alerts .mdc-text-field--filled:not(.mdc-text-field--disabled),
+.recovery-form .mdc-text-field--filled:not(.mdc-text-field--disabled),
+.register-form .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+  border: none; 
+  background-color: white; 
+  font-family: Inter, sans-serif;
+  padding: 0; 
+  margin: 0; 
+  position: relative; 
+}
+
+.alerts .mdc-text-field--filled:not(.mdc-text-field--disabled)::after,
+.recovery-form .mdc-text-field--filled:not(.mdc-text-field--disabled)::after,
+.register-form .mdc-text-field--filled:not(.mdc-text-field--disabled)::after {
+  content: ''; 
+  display: block; 
+  width: 100%; 
+  height: 1px; 
+  background-color: black; 
+  position: absolute; 
+  bottom: 0; 
+  left: 0; 
+}
+
+.alerts .mdc-text-field--filled:not(.mdc-text-field--disabled) input,
+.recovery-form .mdc-text-field--filled:not(.mdc-text-field--disabled) input,
+.register-form .mdc-text-field--filled:not(.mdc-text-field--disabled) input {
+  padding: 0; 
+  border: none; 
+  outline: none;
+  height: 20px; 
+  margin: 0; 
+  line-height: 1;
+  color: #4f4f4f;
+  text-align: center;
+}
+
+.alerts .mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-form-field__input,
+.recovery-form .mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-form-field__input,
+.register-form .mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-form-field__input {
+  margin: 0; 
+  height: auto; 
+  padding-bottom: 0; 
+}
+
+.alerts .mat-mdc-text-field-wrapper .mdc-text-field .ng-tns-c1205077789-5 .mdc-text-field--filled .mdc-text-field--no-label {
+  padding: 0;
+  margin: 0;
+}
+
+.alerts .mdc-checkbox .mdc-checkbox__native-control:enabled:not(:checked):not(:indeterminate):not([data-indeterminate=true])~.mdc-checkbox__background{
+  border: 1px solid#959595;
+}
+
+.alerts .mdc-checkbox .mdc-checkbox__native-control:enabled~.mdc-checkbox__background .mdc-checkbox__checkmark {
+  color: transparent;
+}
+
+.alerts .mdc-checkbox .mdc-checkbox__native-control:enabled~.mdc-checkbox__background .mdc-checkbox__checkmark {
+  background-color: #5C9BD5;
+}
+
+.band-config-container .mat-mdc-fab{
+  box-shadow: none;
+  color: #FE5E81;
+}
+
+.band-config-container .mat-mdc-fab.mat-accent{
+  --mdc-fab-container-color: transparent;
+}
+
+.band-config-container .mdc-fab--extended{
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.band-config-container .mdc-fab--extended:hover{
+  box-shadow: none;
+  background-color: transparent;
+}
+
+.band-config-container .mdc-fab--extended {
+  height: 0;
+}
+
+.band-config-container .mdc-fab{
+  height: 0;
+}
