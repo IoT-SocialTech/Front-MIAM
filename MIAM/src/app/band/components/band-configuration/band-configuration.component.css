@@ -2,9 +2,177 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  color: black;
+  color: #4f4f4f;
   align-items: center;
   background-color: #F2F7FC;
   font-family: Inter, sans-serif;
+  padding: 30px;
+  box-sizing: border-box;
 }
+
+.band-config-container h3{
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  color: #4f4f4f;
+  text-align: left;
+  align-self: flex-start;
+}
+
+.container-padding {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  color: #1C2D3D;
+  text-align: left;
+  align-self: flex-start;
+}
+
+.main-container-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%; 
+  gap: 30px;
+  height: 100%; 
+  padding-bottom: 30px; 
+  box-sizing: border-box; 
+  overflow: hidden;
+}
+
+.container-row{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  gap: 30px;
+}
+
+.band-patients-list {
+  display: flex;
+  flex-direction: column;
+  align-self: flex-start;
+  list-style: none; 
+  padding: 0; 
+  margin: 0; 
+  gap: 15px;
+}
+
+.patient{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background-color: white;
+  border-radius: 20px;
+  gap: 20px;
+}
+
+.patient:hover{
+  cursor: pointer;
+}
+
+.patient p{
+  margin: 0;
+}
+
+.patient-band-configuration{
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  flex: 1;
+  padding: 20px;
+  overflow: scroll auto;
+  height: 100%;
+  border-radius: 20px;
+}
+
+hr {
+  border: none; 
+  border-top: 2px solid #F2F7FC; 
+  margin: 1rem 0;
+}
+
+.info-section{
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+}
+
+.section-column{
+  display: flex;
+  flex-direction: column;
+}
+
+.section-row{
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+}
+
+.alerts{
+  display: flex;
+  flex-direction: column;
+}
+
+.alerts span{
+  color: #4F4F4F;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.relative-section a{
+  align-self: center;
+  justify-self: center;
+  padding-bottom: 20px;
+}
+
+.buttons-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.buttons-section a{
+  align-self: center;
+  justify-self: center;
+  padding-bottom: 0;
+}
+
+.buttons-section p{
+  align-self: center;
+  justify-self: center;
+  margin-bottom: 0;
+  font-size: smaller;
+  color: #959595;
+}
+
+.save-button {
+  width: 200px;
+  padding: 0.5rem;
+  align-items: center;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  background-color: #5C9BD5;
+  border-color: #5C9BD5;
+  color: #ffffff;
+  font-size: 18px;
+  box-shadow: none;
+  border-style: none;
+  font-family: Inter, sans-serif;
+  transition: all 0.5s ease;
+  transform: scale(1); 
+  margin-left: auto; 
+}
+
+.save-button:active {
+  transform: scale(0.9); 
+}
+
