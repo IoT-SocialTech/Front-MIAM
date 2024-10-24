@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>Alert Details</h2>
+<mat-dialog-content>
+  <p><strong>Date:</strong> {{ data.date }}</p>
+  <p><strong>Hour:</strong> {{ data.hour }}</p>
+  <p><strong>Patient:</strong> {{ data.patient }}</p>
+  <p><strong>Alert Type:</strong> {{ data.alertType }}</p>
+  <p><strong>Description:</strong> {{ data.description }}</p>
+  <p><strong>Caregiver:</strong> {{ data.caregiver }}</p>
+  <hr>
+  <p><strong>Attention Hour:</strong> {{ data.caregiverAttendedDate }}</p>
+  <p><strong>Time Until Attended:</strong> {{ calculateTimeSpent() }}</p>
+  <p><strong>Caregiver Actions:</strong> {{ data.actions }}</p>
+  <p><strong>Notes:</strong> {{ data.caregivernotes }}</p>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button class="close-button" (click)="closeDialog()">Ok</button>
+</mat-dialog-actions>

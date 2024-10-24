@@ -156,7 +156,7 @@ hr {
 .save-button {
   width: 200px;
   padding: 0.5rem;
-  align-items: center;
+  margin-top: 0;
   border-radius: 10px;
   display: flex;
   justify-content: center;

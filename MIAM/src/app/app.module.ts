@@ -26,6 +26,8 @@ import { SettingsComponent } from './band/components/settings/settings.component
 import { PatientsComponent } from './band/components/patients/patients.component';
 import { HistoryComponent } from './band/components/history/history.component';
 import { BandConfigurationComponent } from './band/components/band-configuration/band-configuration.component';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -55,7 +57,9 @@ import { BandConfigurationComponent } from './band/components/band-configuration
     MatListModule,
     MatTableModule,
     MatSelectModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatPaginatorModule, 
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -139,3 +139,13 @@ body { margin: 0; font-family: Inter, sans-serif !important;}
 .band-config-container .mdc-fab{
   height: 0;
 }
+
+.mat-mdc-dialog-container{
+  --mdc-dialog-container-color: #FFFFFF; 
+  --mdc-dialog-subhead-color: #4F4F4F; 
+  border-radius: 30px;
+}
+
+mat-dialog-content p {
+  color: #4F4F4F; 
+}
