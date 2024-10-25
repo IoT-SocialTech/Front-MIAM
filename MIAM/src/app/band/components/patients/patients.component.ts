@@ -10,9 +10,9 @@ import { PatientService } from '../../services/patient.service';
 export class PatientsComponent implements OnInit {
   patients: Patient[] = [];
   selectedPatient?: Patient;
-  displayedColumns: string[] = ['medication', 'dose', 'frequency', 'nextDose', 'actions'];
-
+  displayedAlerts: any[] = [];
   selectedCaregiver: string | null = null;
+  
   caregivers = [
     { value: 'caregiver1', viewValue: 'John Doe' },
     { value: 'caregiver2', viewValue: 'Anna Smith' },
@@ -26,28 +26,29 @@ export class PatientsComponent implements OnInit {
     { value: 'relative3', viewValue: 'Carlos Diaz' }
   ];
 
-  medicationAlerts = [
-    {
-      medication: 'Paracetamol',
-      dose: 500,
-      frequency: 2,
-      nextDose: new Date(new Date().setHours(14, 0, 0))  
-    },
-    {
-      medication: 'Ibuprofen',
-      dose: 200,
-      frequency: 3,
-      nextDose: new Date(new Date().setHours(18, 0, 0))  
-    }
-  ];
-
   constructor(private patientService: PatientService) {}
 
   ngOnInit(): void {
     this.getPatients();
   }
 
-   editAlert(alert: any) {
+  transformAlerts() {
+    if (this.selectedPatient?.medication_alerts) { 
+      this.displayedAlerts = this.selectedPatient.medication_alerts.flatMap(alert => {
+        return alert.schedule.map((time) => ({
+          medication: alert.medication,
+          dose: alert.dose,
+          frequency: alert.frequency,
+          nextDose: time 
+        }));
+      });
+      console.log(this.displayedAlerts); // Para verificar los datos
+    } else {
+      this.displayedAlerts = []; 
+    }
+  }
+
+  editAlert(alert: any) {
     console.log('Editing alert', alert);
   }
 
@@ -78,16 +79,19 @@ export class PatientsComponent implements OnInit {
   // Seleccionar un paciente
   selectPatient(patient: Patient): void {
     this.selectedPatient = { ...patient }; // Clonar objeto para evitar modificaciones directas
+    this.transformAlerts();
   }
 
   // Guardar paciente (actualizar o agregar)
+  /*
   savePatient(): void {
     if (this.selectedPatient) {
       // Asegurarnos de que todos los campos requeridos estén definidos
       const updatedPatient: Patient = {
         id: this.selectedPatient.id || '', // Valor predeterminado para evitar undefined
         name: this.selectedPatient.name || '', // Valor predeterminado para evitar undefined
-        age: this.selectedPatient.age || 0, // Valor predeterminado para evitar undefined
+        lastname: this.selectedPatient.lastname || '', // Valor predeterminado para evitar undefined
+        birthdate: this.selectedPatient.birthdate || 0, // Valor predeterminado para evitar undefined
         address: this.selectedPatient.address || '', // Valor predeterminado para evitar undefined
         Account_id: this.selectedPatient.Account_id || 0 // Valor predeterminado para evitar undefined
       };
@@ -120,7 +124,7 @@ export class PatientsComponent implements OnInit {
       }
     }
   }
-
+*/
   // Eliminar paciente
   deletePatient(patient: Patient): void {
     if (confirm('Are you sure you want to delete this patient?')) {
