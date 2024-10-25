@@ -2,14 +2,14 @@
   <div class="container-padding">
     <div class="patients-header">
       <h2>Patients</h2>
-      <button class="add-button" (click)="savePatient()">Add new patient</button>
+      <button class="add-button" >Add new patient</button>
     </div>
 
     <div class="patients-container-row">
       <!-- Left sidebar for patient selection -->
       <ul class="patients-list" *ngIf="patients.length > 0; else noPatients">
         <li class="patient" *ngFor="let patient of patients" (click)="selectPatient(patient)">
-          <p>Patient: {{ patient.name }}</p>
+          <p>Patient: {{ patient.name }} {{ patient.lastname}}</p>
         </li>
       </ul>
       <ng-template #noPatients>
@@ -21,10 +21,10 @@
         <div class="info-section">
           <div class="section-column">
             <p>Name: {{ selectedPatient.name }}</p>
-            <p>Birth Date: 1947-03-12</p>
+            <p>Birth Date: {{ selectedPatient.birthdate }}</p>
           </div>
           <div class="section-column">
-            <p>Last Name: {{ selectedPatient.name }}</p>
+            <p>Last Name: {{ selectedPatient.lastname }}</p>
             <div class="section-row">
               <p>Age: 68</p>
               <p> ID:{{ selectedPatient.id }}</p>
@@ -59,49 +59,47 @@
         <!-- Medication Alerts Section -->
         <div class="medication-alerts">
           <h3>Medication Alerts</h3>
-
-          <mat-table [dataSource]="medicationAlerts" class="medication-alerts-table" matSort>
+        
+          <mat-table [dataSource]="displayedAlerts" class="medication-alerts-table" matSort>
             <!-- Nombre del medicamento -->
             <ng-container matColumnDef="medication">
               <mat-header-cell *matHeaderCellDef> Medication </mat-header-cell>
               <mat-cell *matCellDef="let alert"> {{ alert.medication }} </mat-cell>
             </ng-container>
-            
+        
             <!-- Dosis -->
             <ng-container matColumnDef="dose">
               <mat-header-cell *matHeaderCellDef> Dose </mat-header-cell>
-              <mat-cell *matCellDef="let alert"> {{ alert.dose }} mg <</mat-cell>
+              <mat-cell *matCellDef="let alert"> {{ alert.dose }} </mat-cell>
             </ng-container>
-            
+        
             <!-- Frecuencia -->
             <ng-container matColumnDef="frequency">
               <mat-header-cell *matHeaderCellDef> Frequency </mat-header-cell>
               <mat-cell *matCellDef="let alert"> {{ alert.frequency }} times/day </mat-cell>
             </ng-container>
-            
+        
             <!-- Hora de la próxima dosis -->
             <ng-container matColumnDef="nextDose">
               <mat-header-cell *matHeaderCellDef> Next Dose </mat-header-cell>
-              <mat-cell *matCellDef="let alert"> {{ alert.nextDose | date: 'shortTime' }} </mat-cell>
+              <mat-cell *matCellDef="let alert"> {{ alert.nextDose }} </mat-cell>
             </ng-container>
-            
+        
             <!-- Acciones -->
             <ng-container matColumnDef="actions">
               <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
-                <mat-cell *matCellDef="let alert">
+              <mat-cell *matCellDef="let alert">
                 <button mat-raised-button color="primary" (click)="editAlert(alert)">Edit</button>
                 <button mat-raised-button color="warn" (click)="deleteAlert(alert)">Delete</button>
               </mat-cell>
             </ng-container>
-            
+        
             <!-- Cabecera de la tabla -->
-            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-header-row *matHeaderRowDef="['medication', 'dose', 'frequency', 'nextDose', 'actions']"></mat-header-row>
             <!-- Filas de la tabla -->
-            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+            <mat-row *matRowDef="let row; columns: ['medication', 'dose', 'frequency', 'nextDose', 'actions'];"></mat-row>
           </mat-table>
         </div>
-
-        <hr>
 
         <!-- Health Data Section -->
         <div class="health-data">
@@ -109,25 +107,48 @@
           <div class="section-row">
             <div class="section-row" style="gap: 5px;">
               <p><strong>Last Temperature reading:</strong></p>
-              <p>36.5 °C</p>
-            </div>
-            <div class="section-row" style="gap: 5px;">
-              <p><strong>Status:</strong></p>
-              <p class="status">Stable</p>
+              <ng-container *ngIf="selectedPatient && selectedPatient.temperature && selectedPatient.temperature.length > 0; else noTemperatureData">
+                <p>{{ selectedPatient.temperature[selectedPatient.temperature.length - 1].value }} °C</p>
+                <p [ngClass]="{
+                  'status': true, 
+                  'unstable': selectedPatient.temperature[selectedPatient.temperature.length - 1].value < 36.0 || 
+                              selectedPatient.temperature[selectedPatient.temperature.length - 1].value > 37.5
+                }">
+                  {{ 
+                    selectedPatient.temperature[selectedPatient.temperature.length - 1].value < 36.0 || 
+                    selectedPatient.temperature[selectedPatient.temperature.length - 1].value > 37.5 ? 'Unstable' : 'Stable' 
+                  }}
+                </p>
+              </ng-container>
+              <ng-template #noTemperatureData>
+                <p>No temperature data available</p>
+              </ng-template>
             </div>
           </div>
+          
           <div class="section-row">
             <div class="section-row" style="gap: 5px;">
               <p><strong>Last Heart Rate reading:</strong></p>
-              <p>88 bpm</p>
-            </div>
-            <div class="section-row" style="gap: 5px;">
-              <p><strong>Status:</strong></p>
-              <p class="status">Stable</p>
+              <ng-container *ngIf="selectedPatient && selectedPatient.heartRate && selectedPatient.heartRate.length > 0; else noHeartRateData">
+                <p>{{ selectedPatient.heartRate[selectedPatient.heartRate.length - 1].value }} bpm</p>
+                <p [ngClass]="{
+                  'status': true, 
+                  'unstable': selectedPatient.heartRate[selectedPatient.heartRate.length - 1].value < 60 || 
+                              selectedPatient.heartRate[selectedPatient.heartRate.length - 1].value > 100
+                }">
+                  {{ 
+                    selectedPatient.heartRate[selectedPatient.heartRate.length - 1].value < 60 || 
+                    selectedPatient.heartRate[selectedPatient.heartRate.length - 1].value > 100 ? 'Unstable' : 'Stable' 
+                  }}
+                </p>
+              </ng-container>
+              <ng-template #noHeartRateData>
+                <p>No heart rate data available</p>
+              </ng-template>
             </div>
           </div>
-        </div>
-
+        </div>        
+       
         <hr>
 
         <div class="buttons-section">

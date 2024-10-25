@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 })
 export class PatientService {
 
-  private apiUrl = `${environment.apiUrl}/patients.json`;
+  private apiUrl = `${environment.apiUrl}/patients`;
 
   constructor(private http: HttpClient) {}
 
