@@ -10,11 +10,57 @@ import { PatientService } from '../../services/patient.service';
 export class PatientsComponent implements OnInit {
   patients: Patient[] = [];
   selectedPatient?: Patient;
+  displayedColumns: string[] = ['medication', 'dose', 'frequency', 'nextDose', 'actions'];
+
+  selectedCaregiver: string | null = null;
+  caregivers = [
+    { value: 'caregiver1', viewValue: 'John Doe' },
+    { value: 'caregiver2', viewValue: 'Anna Smith' },
+    { value: 'caregiver3', viewValue: 'Carolina Suarez' }
+  ];
+
+  selectedRelative: string | null = null;
+  relatives = [
+    { value: 'relative1', viewValue: 'Michael Johnson' },
+    { value: 'relative2', viewValue: 'Maria Perez' },
+    { value: 'relative3', viewValue: 'Carlos Diaz' }
+  ];
+
+  medicationAlerts = [
+    {
+      medication: 'Paracetamol',
+      dose: 500,
+      frequency: 2,
+      nextDose: new Date(new Date().setHours(14, 0, 0))  
+    },
+    {
+      medication: 'Ibuprofen',
+      dose: 200,
+      frequency: 3,
+      nextDose: new Date(new Date().setHours(18, 0, 0))  
+    }
+  ];
 
   constructor(private patientService: PatientService) {}
 
   ngOnInit(): void {
     this.getPatients();
+  }
+
+   editAlert(alert: any) {
+    console.log('Editing alert', alert);
+  }
+
+  deleteAlert(alert: any) {
+    console.log('Deleting alert', alert);
+  }
+  
+  onCaregiverSelected(caregiver: string) {
+    console.log('Selected caregiver:', caregiver);
+  }
+
+  onRelativeSelected(relative: string) {
+    console.log('Selected relative:', relative);
   }
 
   // Obtener la lista de pacientes desde el servicio
