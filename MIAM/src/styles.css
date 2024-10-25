@@ -116,27 +116,27 @@ body { margin: 0; font-family: Inter, sans-serif !important;}
   color: #FE5E81;
 }
 
-.band-config-container .mat-mdc-fab.mat-accent{
+.mat-mdc-fab.mat-accent{
   --mdc-fab-container-color: transparent;
 }
 
-.band-config-container .mdc-fab--extended{
+.mdc-fab--extended{
   padding-left: 0;
   padding-right: 0;
   padding-top: 0;
   padding-bottom: 0;
 }
 
-.band-config-container .mdc-fab--extended:hover{
+.mdc-fab--extended:hover{
   box-shadow: none;
   background-color: transparent;
 }
 
-.band-config-container .mdc-fab--extended {
+.mdc-fab--extended {
   height: 0;
 }
 
-.band-config-container .mdc-fab{
+.mdc-fab{
   height: 0;
 }
 
@@ -148,4 +148,10 @@ body { margin: 0; font-family: Inter, sans-serif !important;}
 
 mat-dialog-content p {
   color: #4F4F4F; 
+}
+
+
+.patients-container .mat-mdc-select-placeholder, .mat-mdc-select-value {
+  color: #4F4F4F;
+  font-size: small;
 }

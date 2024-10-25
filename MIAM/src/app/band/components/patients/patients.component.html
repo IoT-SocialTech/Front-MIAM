@@ -1,55 +1,146 @@
 <div class="patients-container">
-  <!-- Sidebar con la lista de pacientes -->
-  <div class="sidebar">
-    <div class="sidebar-header">
-      <h3>Patients</h3>
-      <button mat-raised-button color="primary" class="add-patient-button">+ Add new patient</button>
-    </div>
-    <div class="patient-list">
-      <div *ngFor="let patient of patients" (click)="selectPatient(patient)" class="patient-item" [class.selected]="selectedPatient?.id === patient.id">
-        <span>Patient: {{ patient.name }}</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Panel de detalles del paciente -->
-  <div class="details-panel">
-    <div *ngIf="selectedPatient; else noPatientSelected">
-      <div class="details-header">
-        <mat-form-field class="patient-input">
-          <mat-label>Name</mat-label>
-          <input matInput [(ngModel)]="selectedPatient.name" />
-        </mat-form-field>
-        <mat-form-field class="patient-input">
-          <mat-label>Address</mat-label>
-          <input matInput [(ngModel)]="selectedPatient.address" />
-        </mat-form-field>
-      </div>
-
-      <div class="details-info">
-        <mat-form-field class="patient-input">
-          <mat-label>Age</mat-label>
-          <input matInput type="number" [(ngModel)]="selectedPatient.age" />
-        </mat-form-field>
-        <mat-form-field class="patient-input">
-          <mat-label>ID</mat-label>
-          <input matInput [(ngModel)]="selectedPatient.id" />
-        </mat-form-field>
-        <mat-form-field class="patient-input">
-          <mat-label>Account ID</mat-label>
-          <input matInput [(ngModel)]="selectedPatient.Account_id" />
-        </mat-form-field>
-      </div>
-
-      <!-- Botón de eliminación de paciente -->
-      <button mat-raised-button color="warn" class="delete-button" (click)="deletePatient(selectedPatient)">
-        Delete patient
-      </button>
-      <button mat-raised-button color="primary" class="save-button" (click)="savePatient()">Save</button>
+  <div class="container-padding">
+    <div class="patients-header">
+      <h2>Patients</h2>
+      <button class="add-button" (click)="savePatient()">Add new patient</button>
     </div>
 
-    <ng-template #noPatientSelected>
-      <p>Please select a patient to see details.</p>
-    </ng-template>
+    <div class="patients-container-row">
+      <!-- Left sidebar for patient selection -->
+      <ul class="patients-list" *ngIf="patients.length > 0; else noPatients">
+        <li class="patient" *ngFor="let patient of patients" (click)="selectPatient(patient)">
+          <p>Patient: {{ patient.name }}</p>
+        </li>
+      </ul>
+      <ng-template #noPatients>
+        <p>No patients available</p>
+      </ng-template>
+
+      <!-- Right section for patient details -->
+      <div class="patient-details" *ngIf="selectedPatient">
+        <div class="info-section">
+          <div class="section-column">
+            <p>Name: {{ selectedPatient.name }}</p>
+            <p>Birth Date: 1947-03-12</p>
+          </div>
+          <div class="section-column">
+            <p>Last Name: {{ selectedPatient.name }}</p>
+            <div class="section-row">
+              <p>Age: 68</p>
+              <p> ID:{{ selectedPatient.id }}</p>
+            </div>
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="section-row">
+          <p>Caregiver</p>
+          <mat-select [(value)]="selectedCaregiver" [placeholder]="'Not configured'">
+            <mat-option [value]="null">Not configured</mat-option>
+            <mat-option *ngFor="let caregiver of caregivers" [value]="caregiver.value">
+              {{ caregiver.viewValue }}
+            </mat-option>
+          </mat-select>    
+        </div>
+
+        <hr>
+
+        <div class="section-row">
+          <p>Relative</p>
+          <mat-select [(value)]="selectedRelative" [placeholder]="'Not configured'">
+            <mat-option [value]="null">Not configured</mat-option>
+            <mat-option *ngFor="let relative of relatives" [value]="relative.value">
+              {{ relative.viewValue }}
+            </mat-option>
+          </mat-select>    
+        </div>
+
+        <!-- Medication Alerts Section -->
+        <div class="medication-alerts">
+          <h3>Medication Alerts</h3>
+
+          <mat-table [dataSource]="medicationAlerts" class="medication-alerts-table" matSort>
+            <!-- Nombre del medicamento -->
+            <ng-container matColumnDef="medication">
+              <mat-header-cell *matHeaderCellDef> Medication </mat-header-cell>
+              <mat-cell *matCellDef="let alert"> {{ alert.medication }} </mat-cell>
+            </ng-container>
+            
+            <!-- Dosis -->
+            <ng-container matColumnDef="dose">
+              <mat-header-cell *matHeaderCellDef> Dose </mat-header-cell>
+              <mat-cell *matCellDef="let alert"> {{ alert.dose }} mg <</mat-cell>
+            </ng-container>
+            
+            <!-- Frecuencia -->
+            <ng-container matColumnDef="frequency">
+              <mat-header-cell *matHeaderCellDef> Frequency </mat-header-cell>
+              <mat-cell *matCellDef="let alert"> {{ alert.frequency }} times/day </mat-cell>
+            </ng-container>
+            
+            <!-- Hora de la próxima dosis -->
+            <ng-container matColumnDef="nextDose">
+              <mat-header-cell *matHeaderCellDef> Next Dose </mat-header-cell>
+              <mat-cell *matCellDef="let alert"> {{ alert.nextDose | date: 'shortTime' }} </mat-cell>
+            </ng-container>
+            
+            <!-- Acciones -->
+            <ng-container matColumnDef="actions">
+              <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+                <mat-cell *matCellDef="let alert">
+                <button mat-raised-button color="primary" (click)="editAlert(alert)">Edit</button>
+                <button mat-raised-button color="warn" (click)="deleteAlert(alert)">Delete</button>
+              </mat-cell>
+            </ng-container>
+            
+            <!-- Cabecera de la tabla -->
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <!-- Filas de la tabla -->
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
+        </div>
+
+        <hr>
+
+        <!-- Health Data Section -->
+        <div class="health-data">
+          <h3>Health Data</h3>
+          <div class="section-row">
+            <div class="section-row" style="gap: 5px;">
+              <p><strong>Last Temperature reading:</strong></p>
+              <p>36.5 °C</p>
+            </div>
+            <div class="section-row" style="gap: 5px;">
+              <p><strong>Status:</strong></p>
+              <p class="status">Stable</p>
+            </div>
+          </div>
+          <div class="section-row">
+            <div class="section-row" style="gap: 5px;">
+              <p><strong>Last Heart Rate reading:</strong></p>
+              <p>88 bpm</p>
+            </div>
+            <div class="section-row" style="gap: 5px;">
+              <p><strong>Status:</strong></p>
+              <p class="status">Stable</p>
+            </div>
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="buttons-section">
+          <div class="section-row">
+            <a mat-fab extended routerLink=".">
+              <mat-icon>delete</mat-icon>
+              Delete patient
+            </a>
+            <p>This action will delete all the patient’s data.</p>
+          </div>
+          <button type="submit" class="save-button"> Save </button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
