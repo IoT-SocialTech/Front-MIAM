@@ -1,6 +1,10 @@
+import { Time } from "@angular/common";
+
 export interface MedicationAlert {
-    medication: string;   
-    dose: string;        
-    frequency: string;    
-    schedule: string[];   
+    id: number;
+    medicationName: string;   
+    dosage: string;        
+    scheduleTime: string;    
+    taken: boolean;  
+    Patient_id: number;
 }
