@@ -9,7 +9,7 @@
       <!-- Left sidebar for patient selection -->
       <ul class="patients-list" *ngIf="patients.length > 0; else noPatients">
         <li class="patient" *ngFor="let patient of patients" (click)="selectPatient(patient)">
-          <p>Patient: {{ patient.name }} {{ patient.lastname}}</p>
+          <p>Patient: {{ patient.name }} {{ patient.lastName}}</p>
         </li>
       </ul>
       <ng-template #noPatients>
@@ -21,12 +21,12 @@
         <div class="info-section">
           <div class="section-column">
             <p>Name: {{ selectedPatient.name }}</p>
-            <p>Birth Date: {{ selectedPatient.birthdate }}</p>
+            <p>Birth Date: {{ selectedPatient.birthDate }}</p>
           </div>
           <div class="section-column">
-            <p>Last Name: {{ selectedPatient.lastname }}</p>
+            <p>Last Name: {{ selectedPatient.lastName }}</p>
             <div class="section-row">
-              <p>Age: 68</p>
+              <p>Age: {{ patientAge }} </p>
               <p> ID:{{ selectedPatient.id }}</p>
             </div>
           </div>
@@ -36,24 +36,41 @@
 
         <div class="section-row">
           <p>Caregiver</p>
-          <mat-select [(value)]="selectedCaregiver" [placeholder]="'Not configured'">
-            <mat-option [value]="null">Not configured</mat-option>
-            <mat-option *ngFor="let caregiver of caregivers" [value]="caregiver.value">
-              {{ caregiver.viewValue }}
-            </mat-option>
-          </mat-select>    
+          <ng-container *ngIf="selectedCaregiver; else caregiverSelect">
+            <!-- Mostrar solo el nombre del cuidador asignado -->
+            <p>{{ selectedCaregiver.name }}</p>
+          </ng-container>
+        
+          <ng-template #caregiverSelect>
+            <!-- Mostrar el mat-select solo si no hay cuidador asignado -->
+            <mat-select [(value)]="selectedCaregiver" [placeholder]="'Not configured'">
+              <mat-option [value]="null">Not configured</mat-option>
+              <mat-option *ngFor="let caregiver of caregivers" [value]="caregiver">
+                {{ caregiver.viewValue }} <!-- Mostrar el nombre del cuidador -->
+              </mat-option>
+            </mat-select>
+          </ng-template>
         </div>
+        
 
         <hr>
 
         <div class="section-row">
           <p>Relative</p>
-          <mat-select [(value)]="selectedRelative" [placeholder]="'Not configured'">
-            <mat-option [value]="null">Not configured</mat-option>
-            <mat-option *ngFor="let relative of relatives" [value]="relative.value">
-              {{ relative.viewValue }}
-            </mat-option>
-          </mat-select>    
+          <ng-container *ngIf="selectedPatient && selectedPatient.relative; else relativeSelect">
+            <!-- Mostrar solo el nombre del familiar asignado -->
+            <p>{{ selectedPatient.relative.name }} {{ selectedPatient.relative.lastName }} ({{ selectedPatient.relative.relationship }})</p>
+          </ng-container>
+        
+          <ng-template #relativeSelect>
+            <!-- Mostrar el mat-select solo si no hay familiar asignado -->
+            <mat-select [(value)]="selectedRelative" [placeholder]="'Not configured'">
+              <mat-option [value]="null">Not configured</mat-option>
+              <mat-option *ngFor="let relative of relatives" [value]="relative.value">
+                {{ relative.viewValue }}
+              </mat-option>
+            </mat-select>
+          </ng-template>
         </div>
 
         <!-- Medication Alerts Section -->
@@ -64,25 +81,19 @@
             <!-- Nombre del medicamento -->
             <ng-container matColumnDef="medication">
               <mat-header-cell *matHeaderCellDef> Medication </mat-header-cell>
-              <mat-cell *matCellDef="let alert"> {{ alert.medication }} </mat-cell>
+              <mat-cell *matCellDef="let alert"> {{ alert.medicationName }} </mat-cell>
             </ng-container>
         
             <!-- Dosis -->
             <ng-container matColumnDef="dose">
               <mat-header-cell *matHeaderCellDef> Dose </mat-header-cell>
-              <mat-cell *matCellDef="let alert"> {{ alert.dose }} </mat-cell>
-            </ng-container>
-        
-            <!-- Frecuencia -->
-            <ng-container matColumnDef="frequency">
-              <mat-header-cell *matHeaderCellDef> Frequency </mat-header-cell>
-              <mat-cell *matCellDef="let alert"> {{ alert.frequency }} times/day </mat-cell>
+              <mat-cell *matCellDef="let alert"> {{ alert.dosage }} </mat-cell>
             </ng-container>
         
             <!-- Hora de la próxima dosis -->
             <ng-container matColumnDef="nextDose">
               <mat-header-cell *matHeaderCellDef> Next Dose </mat-header-cell>
-              <mat-cell *matCellDef="let alert"> {{ alert.nextDose }} </mat-cell>
+              <mat-cell *matCellDef="let alert"> {{ alert.scheduleTime  }} </mat-cell>
             </ng-container>
         
             <!-- Acciones -->
@@ -95,13 +106,14 @@
             </ng-container>
         
             <!-- Cabecera de la tabla -->
-            <mat-header-row *matHeaderRowDef="['medication', 'dose', 'frequency', 'nextDose', 'actions']"></mat-header-row>
+            <mat-header-row *matHeaderRowDef="['medication', 'dose', 'nextDose', 'actions']"></mat-header-row>
             <!-- Filas de la tabla -->
-            <mat-row *matRowDef="let row; columns: ['medication', 'dose', 'frequency', 'nextDose', 'actions'];"></mat-row>
+            <mat-row *matRowDef="let row; columns: ['medication', 'dose', 'nextDose', 'actions'];"></mat-row>
           </mat-table>
         </div>
 
-        <!-- Health Data Section -->
+       <!-- Health Data Section -->
+        <!-- 
         <div class="health-data">
           <h3>Health Data</h3>
           <div class="section-row">
@@ -147,7 +159,8 @@
               </ng-template>
             </div>
           </div>
-        </div>        
+        </div> 
+        -->
        
         <hr>
 

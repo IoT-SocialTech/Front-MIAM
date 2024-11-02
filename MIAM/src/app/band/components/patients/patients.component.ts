@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Patient } from '../../models/patient.model';
-import { PatientService } from '../../services/patient.service';
+import { PatientCaregiverService } from '../../services/patient-caregiver.service';
+import { MedicationAlertsService } from '../../services/medication-alerts.service';
+import { Caregiver } from '../../models/caregiver.model';
 
 @Component({
   selector: 'app-patients',
@@ -10,9 +12,10 @@ import { PatientService } from '../../services/patient.service';
 export class PatientsComponent implements OnInit {
   patients: Patient[] = [];
   selectedPatient?: Patient;
+  patientAge: number | null = null; 
   displayedAlerts: any[] = [];
-  selectedCaregiver: string | null = null;
-  
+  selectedCaregiver: Caregiver | null = null;
+
   caregivers = [
     { value: 'caregiver1', viewValue: 'John Doe' },
     { value: 'caregiver2', viewValue: 'Anna Smith' },
@@ -26,26 +29,10 @@ export class PatientsComponent implements OnInit {
     { value: 'relative3', viewValue: 'Carlos Diaz' }
   ];
 
-  constructor(private patientService: PatientService) {}
+  constructor(private patientCaregiverService: PatientCaregiverService, private medicationAlertService: MedicationAlertsService) {}
 
   ngOnInit(): void {
     this.getPatients();
-  }
-
-  transformAlerts() {
-    if (this.selectedPatient?.medication_alerts) { 
-      this.displayedAlerts = this.selectedPatient.medication_alerts.flatMap(alert => {
-        return alert.schedule.map((time) => ({
-          medication: alert.medication,
-          dose: alert.dose,
-          frequency: alert.frequency,
-          nextDose: time 
-        }));
-      });
-      console.log(this.displayedAlerts); // Para verificar los datos
-    } else {
-      this.displayedAlerts = []; 
-    }
   }
 
   editAlert(alert: any) {
@@ -66,20 +53,69 @@ export class PatientsComponent implements OnInit {
 
   // Obtener la lista de pacientes desde el servicio
   getPatients(): void {
-    this.patientService.getPatients().subscribe(
+    const caregiverId = localStorage.getItem('caregiverId'); 
+    console.log('Caregiver ID:', caregiverId);
+    if (caregiverId) { 
+      this.patientCaregiverService.getPatientsByCaregiverId(caregiverId).subscribe(
+        (data) => {
+          this.patients = data; 
+        },
+        (error) => {
+          console.error('Error fetching patients:', error);
+        }
+      );
+    } else {
+      console.error('No caregiverId found in localStorage.'); 
+    }
+  }
+
+  getPatientMedicationAlerts(patient: Patient) {
+    this.medicationAlertService.getMedicationAlertsByPatientId(patient.id).subscribe(
       (data) => {
-        this.patients = data;
+        this.displayedAlerts = data; 
+        this.selectPatient(patient); 
       },
       (error) => {
-        console.error('Error fetching patients:', error);
+        console.error('Error fetching medication alerts:', error);
       }
     );
   }
 
-  // Seleccionar un paciente
   selectPatient(patient: Patient): void {
-    this.selectedPatient = { ...patient }; // Clonar objeto para evitar modificaciones directas
-    this.transformAlerts();
+    if (this.selectedPatient?.id !== patient.id) { // Solo si el paciente es diferente
+      this.selectedPatient = { ...patient }; // Clonar objeto para evitar modificaciones directas
+      this.getPatientMedicationAlerts(patient);
+      this.patientAge = this.calculateAge(patient.birthDate);
+      this.loadCaregiverForPatient(patient.id);
+    }
+  }
+
+  calculateAge(birthDate: string): number {
+    const birth = new Date(birthDate);
+    const today = new Date();
+  
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDifference = today.getMonth() - birth.getMonth();
+  
+    // Ajustar la edad si no ha llegado el cumpleaños este año
+    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    return age;
+  }
+
+  loadCaregiverForPatient(patientId: string): void {
+    this.patientCaregiverService.getCaregiverByPatientId(patientId).subscribe(
+      (response) => {
+        if (response) {
+          this.selectedCaregiver = response;
+        }
+      },
+      (error) => {
+        console.error('Error loading caregiver', error);
+        this.selectedCaregiver = null;
+      }
+    );
   }
 
   // Guardar paciente (actualizar o agregar)
@@ -125,10 +161,11 @@ export class PatientsComponent implements OnInit {
     }
   }
 */
+/*
   // Eliminar paciente
   deletePatient(patient: Patient): void {
     if (confirm('Are you sure you want to delete this patient?')) {
-      this.patientService.deletePatient(patient.id).subscribe(
+      this.patientCaregiverService.deletePatient(patient.id).subscribe(
         () => {
           this.patients = this.patients.filter(p => p.id !== patient.id);
           this.selectedPatient = undefined;
@@ -139,5 +176,5 @@ export class PatientsComponent implements OnInit {
         }
       );
     }
-  }
+  }*/
 }

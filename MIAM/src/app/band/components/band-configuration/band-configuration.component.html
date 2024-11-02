@@ -7,7 +7,7 @@
     <ul class="band-patients-list" *ngIf="patients.length > 0; else noPatients">
       <li class="patient" *ngFor="let patient of patients" (click)="selectPatient(patient)">
         <p>ID: {{ patient.id }}</p>
-        <p>Patient: {{ patient.name }}</p>
+        <p>Patient: {{ patient.name }} {{ patient.lastName}} </p>
       </li>
     </ul>
   
