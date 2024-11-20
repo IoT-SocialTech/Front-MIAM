@@ -1,0 +1,67 @@
+<h2 mat-dialog-title>Crear Paciente y Relativo</h2>
+<form (ngSubmit)="createPatient()" [formGroup]="patientForm">
+  <!-- Campos del paciente -->
+  <mat-form-field>
+    <mat-label>Email del paciente</mat-label>
+    <input matInput formControlName="email" required>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Teléfono del paciente</mat-label>
+    <input matInput formControlName="phoneNumber" required>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Nombre del paciente</mat-label>
+    <input matInput formControlName="name" required>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Apellido del paciente</mat-label>
+    <input matInput formControlName="lastName" required>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Dirección</mat-label>
+    <input matInput formControlName="address" required>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Fecha de nacimiento</mat-label>
+    <input matInput formControlName="birthdate" type="date" required>
+  </mat-form-field>
+</form>
+
+<!-- Formulario de relativo -->
+<form [formGroup]="relativeForm">
+  <h3>Información del Relativo</h3>
+  <mat-form-field>
+    <mat-label>Email del relativo</mat-label>
+    <input matInput formControlName="relativeEmail" required>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Teléfono del relativo</mat-label>
+    <input matInput formControlName="relativePhoneNumber" required>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Nombre del relativo</mat-label>
+    <input matInput formControlName="relativeName" required>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Apellido del relativo</mat-label>
+    <input matInput formControlName="relativeLastName" required>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Relación</mat-label>
+    <input matInput formControlName="relationship" required>
+  </mat-form-field>
+</form>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="closeDialog()">Cancelar</button>
+  <button mat-button type="submit" [disabled]="patientForm.invalid || relativeForm.invalid">Guardar</button>
+</div>

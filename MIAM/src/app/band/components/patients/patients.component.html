@@ -1,0 +1,175 @@
+<div class="patients-container">
+  <div class="container-padding">
+    <div class="patients-header">
+      <h2>Patients</h2>
+      <button class="add-button" (click)="openCreatePatient()">Add new patient</button>
+    </div>
+
+    <div class="patients-container-row">
+      <!-- Left sidebar for patient selection -->
+      <ul class="patients-list" *ngIf="patients.length > 0; else noPatients">
+        <li class="patient" *ngFor="let patient of patients" (click)="selectPatient(patient)">
+          <p>Patient: {{ patient.patient.name }} {{ patient.patient.lastName}}</p>
+        </li>
+      </ul>
+      <ng-template #noPatients>
+        <p>No patients available</p>
+      </ng-template>
+
+      <!-- Right section for patient details -->
+      <div class="patient-details" *ngIf="selectedPatient">
+        <div class="info-section">
+          <div class="section-column">
+            <p>Name: {{ selectedPatient.patient.name }}</p>
+            <p>Birth Date: {{ selectedPatient.patient.birthDate }}</p>
+          </div>
+          <div class="section-column">
+            <p>Last Name: {{ selectedPatient.patient.lastName }}</p>
+            <div class="section-row">
+              <p>Age: {{ patientAge }} </p>
+              <p> ID:{{ selectedPatient.patient.id }}</p>
+            </div>
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="section-row">
+          <p>Caregivers</p>
+          <div class="caregivers-list"> 
+            <ng-container *ngIf="selectedCaregivers">
+              <!-- Mostrar solo el nombre del cuidador asignado -->
+              <div *ngFor="let caregiver of selectedCaregivers">
+                <p>{{ caregiver.caregiver.name }} </p> 
+              </div>
+            </ng-container>
+          </div>
+          
+        </div>
+
+        <hr>
+
+        <div class="section-row">
+          <p>Relative</p>
+          <ng-container *ngIf="selectedPatient && selectedPatient.patient.relative">
+            <!-- Mostrar solo el nombre del familiar asignado -->
+            <p>{{ selectedPatient.patient.relative.name }} {{ selectedPatient.patient.relative.lastName }} ({{ selectedPatient.patient.relative.relationship }})</p>
+          </ng-container>
+        </div>
+
+        <hr>
+
+        <!-- Medication Alerts Section -->
+        <div class="medication-alerts">
+          <div class="section-row">
+            <h3>Medication Alerts</h3>
+            <button mat-raised-button (click)="openCreateAlert()">Add alert</button>
+          </div>
+          
+
+          <div *ngIf="displayedAlerts.length === 0">
+            <p style="padding-top: 10px; text-align: center;">No medication alerts available.</p>
+          </div>
+
+          <mat-table *ngIf="displayedAlerts.length > 0" [dataSource]="displayedAlerts" class="medication-alerts-table" matSort>
+            <!-- Nombre del medicamento -->
+            <ng-container matColumnDef="medication">
+              <mat-header-cell *matHeaderCellDef> Medication </mat-header-cell>
+              <mat-cell *matCellDef="let alert"> {{ alert.medicationName }} </mat-cell>
+            </ng-container>
+
+            <!-- Dosis -->
+            <ng-container matColumnDef="dose">
+              <mat-header-cell *matHeaderCellDef> Dose </mat-header-cell>
+              <mat-cell *matCellDef="let alert"> {{ alert.dose }} mg </mat-cell>
+            </ng-container>
+
+            <!-- Hora de la próxima dosis -->
+            <ng-container matColumnDef="nextDose">
+              <mat-header-cell *matHeaderCellDef> Next Dose </mat-header-cell>
+              <mat-cell *matCellDef="let alert"> 
+                {{ alert.hour }}
+              </mat-cell>
+            </ng-container>
+
+            <!-- Acciones -->
+            <ng-container matColumnDef="actions">
+              <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+              <mat-cell *matCellDef="let alert">
+                <button mat-raised-button color="warn" (click)="deleteAlert(alert)">Delete</button>
+              </mat-cell>
+            </ng-container>
+
+            <!-- Cabecera de la tabla -->
+            <mat-header-row *matHeaderRowDef="['medication', 'dose', 'nextDose', 'actions']"></mat-header-row>
+            <!-- Filas de la tabla -->
+            <mat-row *matRowDef="let row; columns: ['medication', 'dose', 'nextDose', 'actions'];"></mat-row>
+          </mat-table>
+        </div>
+
+       <!-- Health Data Section -->
+        <!-- 
+        <div class="health-data">
+          <h3>Health Data</h3>
+          <div class="section-row">
+            <div class="section-row" style="gap: 5px;">
+              <p><strong>Last Temperature reading:</strong></p>
+              <ng-container *ngIf="selectedPatient && selectedPatient.temperature && selectedPatient.temperature.length > 0; else noTemperatureData">
+                <p>{{ selectedPatient.temperature[selectedPatient.temperature.length - 1].value }} °C</p>
+                <p [ngClass]="{
+                  'status': true, 
+                  'unstable': selectedPatient.temperature[selectedPatient.temperature.length - 1].value < 36.0 || 
+                              selectedPatient.temperature[selectedPatient.temperature.length - 1].value > 37.5
+                }">
+                  {{ 
+                    selectedPatient.temperature[selectedPatient.temperature.length - 1].value < 36.0 || 
+                    selectedPatient.temperature[selectedPatient.temperature.length - 1].value > 37.5 ? 'Unstable' : 'Stable' 
+                  }}
+                </p>
+              </ng-container>
+              <ng-template #noTemperatureData>
+                <p>No temperature data available</p>
+              </ng-template>
+            </div>
+          </div>
+          
+          <div class="section-row">
+            <div class="section-row" style="gap: 5px;">
+              <p><strong>Last Heart Rate reading:</strong></p>
+              <ng-container *ngIf="selectedPatient && selectedPatient.heartRate && selectedPatient.heartRate.length > 0; else noHeartRateData">
+                <p>{{ selectedPatient.heartRate[selectedPatient.heartRate.length - 1].value }} bpm</p>
+                <p [ngClass]="{
+                  'status': true, 
+                  'unstable': selectedPatient.heartRate[selectedPatient.heartRate.length - 1].value < 60 || 
+                              selectedPatient.heartRate[selectedPatient.heartRate.length - 1].value > 100
+                }">
+                  {{ 
+                    selectedPatient.heartRate[selectedPatient.heartRate.length - 1].value < 60 || 
+                    selectedPatient.heartRate[selectedPatient.heartRate.length - 1].value > 100 ? 'Unstable' : 'Stable' 
+                  }}
+                </p>
+              </ng-container>
+              <ng-template #noHeartRateData>
+                <p>No heart rate data available</p>
+              </ng-template>
+            </div>
+          </div>
+        </div> 
+        -->
+       
+        <hr>
+
+        <div class="buttons-section">
+          <div class="section-row">
+            <a mat-fab extended routerLink="." (click)="deletePatient(selectedPatient.patient.id)">
+              <mat-icon>delete</mat-icon>
+              Delete patient
+            </a>
+            <p>This action will delete all the patient’s data.</p>
+          </div>
+          <button type="submit" class="save-button"> Save </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

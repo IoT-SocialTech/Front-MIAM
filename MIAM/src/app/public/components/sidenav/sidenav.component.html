@@ -1,0 +1,53 @@
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav mode="side" opened class="sidenav">
+    <nav class="sidenav-list">
+      <ul class="nav-list">
+        <li>
+          <a mat-list-item routerLink="/MIAM/dashboard" class="logo-link">
+            <img src="assets/MIAM-logo.png" alt="Logo" class="logo-img">
+          </a>
+        </li>
+        <li>
+          <a mat-list-item routerLink="/MIAM/dashboard" routerLinkActive="active">
+            <mat-icon>dashboard</mat-icon>
+          </a>
+        </li>
+        <li>
+          <a mat-list-item routerLink="/MIAM/band-configuration" routerLinkActive="active">
+            <mat-icon>health_and_safety</mat-icon>
+          </a>
+        </li>
+        <li>
+          <a mat-list-item routerLink="/MIAM/history" routerLinkActive="active">
+            <mat-icon>history</mat-icon>
+          </a>
+        </li>
+        <li>
+          <a mat-list-item routerLink="/MIAM/patients" routerLinkActive="active">
+            <mat-icon>person</mat-icon>
+          </a>
+        </li>
+      </ul>
+      <ul class="bottom-nav-list">
+        <li class="bottom-section">
+          <a mat-list-item routerLink="/MIAM/configuration" routerLinkActive="active">
+            <mat-icon>settings</mat-icon>
+          </a>
+        </li>
+        <li class="bottom-section">
+          <a mat-list-item routerLink="/MIAM/payment" routerLinkActive="active">
+            <mat-icon>credit_card</mat-icon>
+          </a>
+        </li>
+        <li class="bottom-section">
+          <a mat-list-item (click)="onLogout()" routerLinkActive="active">
+            <mat-icon>power_settings_new</mat-icon>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>
