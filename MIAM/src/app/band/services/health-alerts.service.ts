@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Alert } from '../models/alert.model';
@@ -9,25 +9,33 @@ import { catchError, map, Observable, throwError } from 'rxjs';
 })
 export class HealthAlertsService {
 
-  private apiUrl = `${environment.apiUrl}/alerts`;
+  private apiUrl = `${environment.apiUrl}/miam/cloudApi/alerts`;
 
   constructor(private http: HttpClient) {}
 
-  //Obtener todas las health alerts de los pacientes de un caregiver segun su id
+  private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    if (token) {
+      return new HttpHeaders({
+        Authorization: `Bearer ${token}`,
+      });
+    }
+    return new HttpHeaders();
+  }
+
   getHealthAlertsByCaregiverId(id: string): Observable<Alert[]> {
-    return this.http.get<any>(`${this.apiUrl}/caregiver/${id}`).pipe(
+    return this.http.get<any>(`${this.apiUrl}/caregiver/${id}`, { headers: this.getAuthHeaders() }).pipe(
       map(response => {
         if (response.status === 'success' && response.data) { 
-          return response.data; // Retornar solo las alertas de salud
+          return response.data;
         } else {
-          throw new Error('No medication alerts found'); // Lanzar error si no se encuentran alertas
+          throw new Error('No medication alerts found');
         }
       }),
       catchError(this.handleError)
     );  
   }
-         
-    // Manejo de errores
+
   private handleError(error: any) {
     console.error('An error occurred', error); 
     return throwError(error.message || 'Something went wrong');

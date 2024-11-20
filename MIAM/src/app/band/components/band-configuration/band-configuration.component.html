@@ -6,8 +6,8 @@
   <div class="main-container-row">
     <ul class="band-patients-list" *ngIf="patients.length > 0; else noPatients">
       <li class="patient" *ngFor="let patient of patients" (click)="selectPatient(patient)">
-        <p>ID: {{ patient.id }}</p>
-        <p>Patient: {{ patient.name }} {{ patient.lastName}} </p>
+        <p>ID: {{ patient.patient.id }}</p>
+        <p>Patient: {{ patient.patient.name }} {{ patient.patient.lastName}} </p>
       </li>
     </ul>
   
@@ -18,7 +18,7 @@
     <div class="patient-band-configuration" *ngIf="selectedPatient" >
       <div class="info-section">
         <div class="section-column">
-          <p>ID: {{ selectedPatient.id }}</p>
+          <p>ID: {{ selectedPatient.patient.id }}</p>
           <p>Battery: 80%</p>
         </div>
         <div class="section-column">
@@ -36,7 +36,7 @@
         <h3>Patient</h3>
         <div class="section-row">
           <p style="font-weight: bold;">Name:</p>
-          <p> {{ selectedPatient.name }}</p>
+          <p> {{ selectedPatient.patient.name }} {{ selectedPatient.patient.lastName }}</p>
         </div>
       </div>
 
@@ -46,7 +46,7 @@
         <h3>Caregiver</h3>
         <div class="section-row">
           <p style="font-weight: bold;">Assigned to:</p>
-          <p>Carolina Suarez</p>
+          <p> {{selectedPatient.caregiver.name}}</p>
         </div>
         <div class="section-row">
           <p style="font-weight: bold;">Alerts:</p>
@@ -90,11 +90,7 @@
         <div class="section-row">
           <p style="font-weight: bold;">Related to:</p>
           <div class="section-row">
-            <p>Carolina Suarez</p>
-            <a mat-fab extended routerLink=".">
-              <mat-icon>delete</mat-icon>
-              Remove relative
-            </a>
+            <p> {{selectedPatient.patient.relative.name}} {{selectedPatient.patient.relative.lastName}} </p>
           </div>
         </div>
         <div class="section-row">
