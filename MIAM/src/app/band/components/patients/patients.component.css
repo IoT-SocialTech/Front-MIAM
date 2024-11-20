@@ -99,6 +99,12 @@
   border-radius: 20px;
 }
 
+.caregivers-list{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 hr {
   border: none; 
   border-top: 2px solid #F2F7FC; 
