@@ -65,7 +65,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     this.formattedDate = this.formatDate(this.currentDate); 
     this.loadAlerts();
 
-    this.subscription = interval(10000)
+    this.subscription = interval(5000)
       .pipe(
         switchMap(() => this.loadChartData())  // fetches and updates chart data
       )
@@ -232,24 +232,47 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   
   
   updateTemperatureChart(newTemp: number): void {
-    this.temperatureData.push(newTemp);
-    console.log('Temperature data:', this.temperatureData);
-    
-    if (this.temperatureData.length > 10) {
-      this.temperatureData.shift(); 
+    if (!Array.isArray(this.temperatureData)) {
+      this.temperatureData = []; // Asegúrate de que sea un array
     }
-    
-    this,this.tempChart.update();
-
+  
+    this.temperatureData.push(newTemp); // Agrega el nuevo valor
+    console.log('Temperature data before shift:', this.temperatureData);
+  
+    // Limitar la cantidad de datos a 10 elementos
+    while (this.temperatureData.length > 10) {
+      this.temperatureData.shift();
+    }
+  
+    console.log('Temperature data after shift:', this.temperatureData);
+  
+    // Actualiza el gráfico si existe
+    if (this.tempChart) {
+      this.tempChart.data.datasets[0].data = this.temperatureData; // Actualiza los datos del gráfico
+      this.tempChart.update(); // Actualiza la visualización
+    }
   }
   
   updatePulseChart(newPulse: number): void {
-    this.pulseData.push(newPulse);
-    console.log('Pulse data:', this.pulseData);
-    if (this.pulseData.length > 10) {
-      this.pulseData.shift();  
+    if (!Array.isArray(this.pulseData)) {
+      this.pulseData = []; // Asegúrate de que sea un array
     }
-    this,this.pulseChart.update();
+  
+    this.pulseData.push(newPulse); // Agrega el nuevo valor
+    console.log('Pulse data before shift:', this.pulseData);
+  
+    // Limitar la cantidad de datos a 10 elementos
+    while (this.pulseData.length > 10) {
+      this.pulseData.shift();
+    }
+  
+    console.log('Pulse data after shift:', this.pulseData);
+  
+    // Actualiza el gráfico si existe
+    if (this.pulseChart) {
+      this.pulseChart.data.datasets[0].data = this.pulseData; // Actualiza los datos del gráfico
+      this.pulseChart.update(); // Actualiza la visualización
+    }
   }
 
 
@@ -262,8 +285,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       heartRate: this.feingClientService.getHeartRate("1")
     }).pipe(
       map(({ temperature, heartRate }) => {
-        this.temperatureData = temperature;
-        this.pulseData = heartRate;
+        this.temperatureData.push(temperature.temperature);
+        this.pulseData.push(heartRate.heartRate);
 
         console.log('Temperature data:', temperature.temperature);
         console.log('Pulse data:', heartRate.heartRate);
