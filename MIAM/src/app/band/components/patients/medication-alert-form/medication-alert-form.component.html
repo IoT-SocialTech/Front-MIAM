@@ -1,0 +1,29 @@
+<div class="medication-container">
+  <h2 mat-dialog-title>Create Medication Alert</h2>
+  <form [formGroup]="alertForm" (ngSubmit)="submitForm()" class="medication-form">
+    <div class="form-row">
+      <label>Medication Name:</label>
+      <mat-form-field>
+        <input matInput formControlName="medicationName" required />
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <label>Dose (mg):</label>
+      <mat-form-field>
+        <input matInput type="number" formControlName="dose" required />
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <label>Hour:</label>
+      <mat-form-field>
+        <input matInput formControlName="hour" type="time" required />
+      </mat-form-field>
+    </div>
+
+    <div mat-dialog-actions>
+      <button class="save-button" type="submit">Save</button>
+    </div>
+  </form>
+</div>

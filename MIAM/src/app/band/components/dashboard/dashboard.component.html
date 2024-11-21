@@ -3,8 +3,11 @@
     <div class="dashboard-column">
       <div class="dashboard-alerts">
         <h2>Alerts</h2>
-
+        
+        
+        
       </div>
+      
       <div class="dashboard-caregivers">
         <h2>Caregivers</h2>
         <mat-accordion>
@@ -25,18 +28,42 @@
         </mat-accordion>
       </div>
     </div>
+
     <div class="dashboard-column">
       <div class="dashboard-row">
         <div class="dashboard-general">
           <h2>Total Patients</h2>
-
-
         </div>
-        <div class="dashboard-medication">
-          <h2>Medication</h2>
 
+        <div class="dashboard-medication">
+          <h2>Medication Alerts</h2>
+          <!-- Verificar que `allMedicationAlerts` tiene elementos y luego acceder al primero -->
+          <div *ngFor="let medicationAlert of allMedicationAlerts[0]?.alerts">
+            <div class="alert-card">
+              <div class="alert-border">
+                <div class="alert-left">
+                  <p>{{ medicationAlert.hour }}</p>
+                </div>
+                <div class="alert-right">
+                  <div class="patient-info">
+                    <p class="patient-name">{{ allMedicationAlerts[0]?.patientName }} </p>
+                  </div>
+                  <div class="medication-info">
+                    <p class="medication-dose">{{ medicationAlert.medicationName }} {{ medicationAlert.dose }} mg</p>
+                  </div>
+                </div>
+              </div>
+              <div class="menu">
+                <mat-icon>more_vert</mat-icon>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item (click)="markAsTaken(medicationAlert)">Mark as Taken</button>
+                </mat-menu>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
       <div class="dashboard-vitals">
         <div class="vitals-header">
           <div style="display: flex; flex-direction: column; align-self: flex-start; gap: 0; padding: 0; margin: 0;">
@@ -49,12 +76,12 @@
               <mat-option *ngFor="let patient of patients" [value]="patient.value">
                 {{ patient.viewValue }}
               </mat-option>
-            </mat-select>            
+            </mat-select>
           </mat-form-field>
         </div>
         <div class="temperature-chart">
           <p>Temperature (°C)</p>
-          <canvas #temperatureChart></canvas> 
+          <canvas #temperatureChart></canvas>
         </div>
         <div class="pulse-chart">
           <p>Pulse (bpm) </p>

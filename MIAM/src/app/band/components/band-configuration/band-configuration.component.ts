@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Patient } from '../../models/patient.model';
 import { PatientCaregiverService } from '../../services/patient-caregiver.service';
+import { PatientCaregiver } from '../../models/patientCaregiver.model';
 
 @Component({
   selector: 'app-band-settings',
@@ -8,8 +9,8 @@ import { PatientCaregiverService } from '../../services/patient-caregiver.servic
   styleUrls: ['./band-configuration.component.css']
 })
 export class BandConfigurationComponent {
-  patients: Patient[] = [];
-  selectedPatient?: Patient;
+  patients: PatientCaregiver[] = [];
+  selectedPatient?: PatientCaregiver;
 
   constructor(private patientCaregiverService: PatientCaregiverService) {}
 
@@ -17,14 +18,16 @@ export class BandConfigurationComponent {
     this.getPatients();
   }
 
-  // Obtener la lista de pacientes desde el servicio
+  // Obtener la lista de pacientes desde el servicio 
   getPatients(): void {
     const caregiverId = localStorage.getItem('caregiverId'); 
     console.log('Caregiver ID:', caregiverId);
     if (caregiverId) { 
       this.patientCaregiverService.getPatientsByCaregiverId(caregiverId).subscribe(
         (data) => {
-          this.patients = data; 
+          console.log('Data:', data);
+          this.patients = data.map((item: any) =>  ({ patient: item.patient, caregiver: item.caregiver }));
+          console.log('Patients:', this.patients);
         },
         (error) => {
           console.error('Error fetching patients:', error);
@@ -36,7 +39,7 @@ export class BandConfigurationComponent {
   }
 
   // Seleccionar un paciente
-  selectPatient(patient: Patient): void {
+  selectPatient(patient: PatientCaregiver): void {
     this.selectedPatient = { ...patient }; // Clonar objeto para evitar modificaciones directas
   }
   

@@ -155,3 +155,33 @@ mat-dialog-content p {
   color: #4F4F4F;
   font-size: small;
 }
+
+
+.medication-form .mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-floating-label,
+.recovery-form .mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-floating-label,
+.register-form .mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-floating-label {
+  color: rgb(0 0 0 / 40%);
+  font-family: Inter, sans-serif;
+}
+
+.medication-form .mdc-text-field--filled:not(.mdc-text-field--disabled),
+.recovery-form .mdc-text-field--filled:not(.mdc-text-field--disabled),
+.register-form .mdc-text-field--filled:not(.mdc-text-field--disabled) {
+  border: 1px solid rgb(0 0 0 / 40%);
+  border-radius: 8px;
+  background-color: white;
+  font-family: Inter, sans-serif;
+}
+
+.medication-form .mat-mdc-icon-button.mat-mdc-button-base,
+.recovery-form .mat-mdc-icon-button.mat-mdc-button-base,
+.register-form .mat-mdc-icon-button.mat-mdc-button-base {
+  color: rgb(0 0 0 / 40%);
+  font-family: Inter, sans-serif;
+}
+
+.medication-form .mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-text-field__input,
+.recovery-form .mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-text-field__input,
+.register-form .mdc-text-field--filled:not(.mdc-text-field--disabled) .mdc-text-field__input {
+  color: black;
+}
