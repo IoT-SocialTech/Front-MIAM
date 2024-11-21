@@ -3,7 +3,33 @@
     <div class="dashboard-column">
       <div class="dashboard-alerts">
         <h2>Alerts</h2>
+        
+        <div *ngFor="let alert of alerts.data" class="alert-card">
+          <div class="alert-border">
+            <div class="alert-left">
+              <!-- Mostrar la fecha/hora generada de la alerta -->
+              <p>{{ alert.generatedDate | date:'shortTime' }}</p>
+            </div>
+            <div class="alert-right">
+              <div class="patient-info">
+                <!-- Mostrar el nombre del paciente de la alerta actual -->
+                <p class="patient-name">{{ alert.patientId }}</p>
+              </div>
+              <div class="alert-info">
+                <!-- Mostrar tipo de alerta (podrías agregar más detalles según sea necesario) -->
+                <p class="alert-description">{{ getAlertType(alert.reportType) }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="menu">
+            <mat-icon [matMenuTriggerFor]="menu">more_vert</mat-icon>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item >Handle Alert</button>
+            </mat-menu>
+          </div>
+        </div>
       </div>
+      
       
       <div class="dashboard-caregivers">
         <h2>Caregivers</h2>
@@ -28,9 +54,7 @@
 
     <div class="dashboard-column">
       <div class="dashboard-row">
-        <div class="dashboard-general">
-          <h2>Total Patients</h2>
-        </div>
+       
 
         <div class="dashboard-medication">
           <h2>Medication Alerts</h2>

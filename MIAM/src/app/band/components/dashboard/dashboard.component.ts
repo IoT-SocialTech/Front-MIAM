@@ -1,12 +1,16 @@
-import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
 import { PatientService } from '../../services/patient.service';  
 import { AccountService } from '../../services/account.service';
 import Chart from 'chart.js/auto';
 import { PatientCaregiverService } from '../../services/patient-caregiver.service';
 import { MedicationAlertsService } from '../../services/medication-alerts.service';
-import { forkJoin, map } from 'rxjs';
+import { forkJoin, map, Observable } from 'rxjs';
 import { Patient } from '../../models/patient.model';
-
+import { Alert } from '../../models/alert.model';
+import { ReportHistoryService } from '../../services/report-history.service';
+import { FeingClientService } from '../../services/feing-client.service';
+import { interval, Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 interface Caregiver {
   id: string;
@@ -20,17 +24,19 @@ interface Caregiver {
   styleUrls: ['./dashboard.component.css']
 })
 
-export class DashboardComponent implements OnInit, AfterViewInit {
+export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   public tempChart: any;
   public pulseChart: any;
+  private subscription: Subscription = new Subscription();
 
   patients: { value: string, viewValue: string }[] = [];
   selectedPatient: Patient | null = null;  // Esto ya no se usará para las alertas
+  alerts: { data: Alert[] } = { data: [] }; 
 
   currentDate: Date = new Date();
   formattedDate: string = '';
-  temperatureData: number[] = [35.0, 36.1, 35.4, 37.5]; 
-  pulseData: number[] = [72, 75, 78, 76, 74, 73, 77]; 
+  temperatureData: any[] = []; 
+  pulseData: any[] = []; 
   chart!: Chart;
 
   caregivers: Caregiver[] = []; // Array para cuidadores
@@ -44,17 +50,91 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     private patientService: PatientService, 
     private accountService: AccountService,
     private patientCaregiverService: PatientCaregiverService,
-    private medicationAlertService: MedicationAlertsService
-  ) {}
+    private medicationAlertService: MedicationAlertsService,
+    private reportHistoryService: ReportHistoryService,
+    private feingClientService: FeingClientService,
+  ) {
+    this.subscription = new Subscription();
+  }
 
   ngOnInit(): void {
+    this.temperatureData = []; 
+    this.pulseData = [];
+
     this.loadCaregivers();  // Cargamos los cuidadores y sus pacientes
     this.formattedDate = this.formatDate(this.currentDate); 
-  }
+    this.loadAlerts();
+
+    this.subscription = interval(10000)
+      .pipe(
+        switchMap(() => this.loadChartData())  // fetches and updates chart data
+      )
+      .subscribe({
+        next: (response) => {
+          // handle success
+        },
+        error: (error) => console.error('Error fetching data:', error)
+      });
+        
+      }
 
   ngAfterViewInit(): void {
     this.createTemperatureChart(); 
     this.createPulseChart(); 
+
+  }
+
+  ngOnDestroy() {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
+  }
+ 
+  loadAlerts(): void {
+    const caregiverId = parseInt(localStorage.getItem('caregiverId') || '', 10);
+  
+    this.reportHistoryService.getReportsByCaregiverId(caregiverId.toString()).subscribe({
+      next: (response) => {
+        if (Array.isArray(response)) {
+
+          const filteredAlerts = response.filter((alert: Alert) => alert.reportType !== 'NORMAL_METRICS');
+          this.alerts.data = filteredAlerts;
+  
+          filteredAlerts.forEach((alert: Alert) => {
+            this.getPatientName(alert.patientId).subscribe(
+              (patientName) => {
+                alert.patientId = patientName;
+              }
+            );
+          });
+        } else {
+          console.error('Unexpected response format. Expected an array of alerts.');
+        }
+      },
+      error: (err) => {
+        console.error('Error loading alerts:', err);
+      }
+    });
+  }
+  
+  
+  getAlertType(type: string): string {
+    switch(type) {
+      case 'HIGH_HEART_RATE': return 'High heart rate';
+      case 'LOW_HEART_RATE': return 'Low heart rate';
+      case 'HIGH_TEMPERATURE': return 'High temperature';
+      case 'LOW_TEMPERATURE': return 'Low temperature';
+      case 'NORMAL_METRICS': return 'Normal metrics';
+      default: return 'Unknown alert type';
+    }
+  }
+
+  getPatientName(patientId: string): Observable<string> {
+    return this.patientService.getPatient(patientId).pipe(
+      map(patient => {
+        return `${patient?.name || 'Unknown'} ${patient?.lastName || 'Unknown'}`;
+      })
+    );
   }
 
   loadCaregivers(): void {
@@ -109,18 +189,14 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.allMedicationAlerts = []; // Limpiar lista de alertas previas
   
     const allPatients = this.caregivers.flatMap(caregiver => caregiver.patients || []);
-  
-    console.log('All patients:', allPatients); 
-  
+    
     const alertRequests = allPatients.map(patient =>
       this.medicationAlertService.getMedicationAlertsByPatientId(patient.id)
     );
   
-    console.log('All alert requests:', alertRequests); 
   
     forkJoin(alertRequests).subscribe(
       (alerts) => {
-        console.log('All alerts received:', alerts); 
   
         alerts.forEach((alertData, index) => {
           const patient = allPatients[index];
@@ -147,9 +223,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
             console.error('Invalid alert data for patient:', patient.name, alertData);
           }
         });
-  
-        console.log('Filtered medication alerts:', this.allMedicationAlerts); 
-      },
+        },
       (error) => {
         console.error('Error loading medication alerts:', error);
       }
@@ -157,15 +231,56 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
   
   
+  updateTemperatureChart(newTemp: number): void {
+    this.temperatureData.push(newTemp);
+    console.log('Temperature data:', this.temperatureData);
+    
+    if (this.temperatureData.length > 10) {
+      this.temperatureData.shift(); 
+    }
+    
+    this,this.tempChart.update();
+
+  }
+  
+  updatePulseChart(newPulse: number): void {
+    this.pulseData.push(newPulse);
+    console.log('Pulse data:', this.pulseData);
+    if (this.pulseData.length > 10) {
+      this.pulseData.shift();  
+    }
+    this,this.pulseChart.update();
+  }
+
+
+  loadChartData(): Observable<any> {
+
+    console.log('Loading chart data...'); 
+
+    return forkJoin({
+      temperature: this.feingClientService.getTemperature("1"),
+      heartRate: this.feingClientService.getHeartRate("1")
+    }).pipe(
+      map(({ temperature, heartRate }) => {
+        this.temperatureData = temperature;
+        this.pulseData = heartRate;
+
+        console.log('Temperature data:', temperature.temperature);
+        console.log('Pulse data:', heartRate.heartRate);
+
+        if(temperature.temperature!= null && heartRate.heartRate != null){
+          this.updateTemperatureChart(temperature.temperature);
+          this.updatePulseChart(heartRate.heartRate);
+        }
+      })
+    );
+  }
   
 
   markAsTaken(alert: any): void {
-    // Logic to mark the alert as taken
-    console.log('Marking alert as taken:', alert);
     
     this.medicationAlertService.editMedicationAlert(alert.id, true).subscribe(
       (response) => {
-        console.log('Alert marked as taken:', response);
         this.loadMedicationAlerts(); // Recargar las alertas
       },
       (error) => {

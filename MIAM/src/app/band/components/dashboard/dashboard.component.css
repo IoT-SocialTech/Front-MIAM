@@ -129,6 +129,7 @@ canvas {
   flex-direction: row;
   align-items: center;
   width: 100%;
+  margin-bottom: 5px;
 }
 
 .alert-border {
@@ -243,3 +244,21 @@ mat-expansion-panel-body {
   padding: 10px; 
 }
 
+.dashboard-alerts {
+  overflow-y: auto; /* Scroll vertical */
+  scrollbar-width: thin; /* Barra delgada en Firefox */
+  scrollbar-color: #B6BEC5 #F2F7FC; /* Color de la barra y fondo en Firefox */
+}
+
+.dashboard-alerts::-webkit-scrollbar {
+  width: 8px; /* Anchura de la barra */
+}
+
+.dashboard-alerts::-webkit-scrollbar-thumb {
+  background: #B6BEC5; /* Color de la barra */
+  border-radius: 4px; /* Bordes redondeados */
+}
+
+.dashboard-alerts::-webkit-scrollbar-track {
+  background: #F2F7FC; /* Fondo de la barra */
+}

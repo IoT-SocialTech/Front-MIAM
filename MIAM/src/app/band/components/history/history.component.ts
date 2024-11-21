@@ -2,8 +2,10 @@ import { ChangeDetectionStrategy, Component, Inject, inject, OnInit, ViewChild }
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { HealthAlertsService } from '../../services/health-alerts.service';
+import { ReportHistoryService } from '../../services/report-history.service';
+import { PatientService } from '../../services/patient.service';
 import { Alert } from '../../models/alert.model';
+import { map, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-history',
@@ -19,7 +21,10 @@ export class HistoryComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor(private alertService: HealthAlertsService) {}
+  constructor(
+    private reportHistoryService: ReportHistoryService,
+    private patientService: PatientService
+  ) {}
 
   ngOnInit(): void {
     this.loadAlerts();
@@ -28,11 +33,12 @@ export class HistoryComponent implements OnInit {
   ngAfterViewInit() {
     this.alerts.paginator = this.paginator;
   }
+  
 
   private loadAlerts(): void {
-    this.alertService.getHealthAlertsByCaregiverId(this.caregiverId).subscribe({
+    this.reportHistoryService.getReportsByCaregiverId(this.caregiverId).subscribe({
       next: (data: Alert[]) => {
-        this.alerts.data = data; // Asigna los datos a la fuente de datos de la tabla
+        this.alerts.data = data; 
       },
       error: (err) => {
         console.error('Error fetching alerts:', err);
@@ -53,6 +59,33 @@ export class HistoryComponent implements OnInit {
       console.log(`Dialog result: ${result}`);
     });
   }
+
+
+  getAlertType(type: string): string {
+    console.log('Alert type:', type); 
+    switch(type) {
+      case 'HIGH_HEART_RATE': return 'High heart rate';
+      case 'LOW_HEART_RATE': return 'Low heart rate';
+      case 'HIGH_TEMPERATURE': return 'High temperature';
+      case 'LOW_TEMPERATURE': return 'Low temperature';
+      case 'NORMAL_METRICS': return 'Normal metrics';
+      default: return 'Unknown alert type';
+    }
+  }
+
+  getDate(dateTime: string): string {
+    return dateTime.split('T')[0]; 
+  }
+  
+  getTime(dateTime: string): string {
+    return dateTime.split('T')[1].split('.')[0]; 
+  }
+
+  getPatientName(patientId: string): Observable<string> {
+    return this.patientService.getPatient(patientId).pipe(
+      map(patient => `${patient?.name} ${patient?.lastName}` || 'Unknown patient')
+    );
+  }
 }
 
 @Component({
@@ -66,7 +99,8 @@ export class HistoryComponent implements OnInit {
 export class DialogContent {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: Alert,
-    private dialogRef: MatDialogRef<DialogContent>
+    private dialogRef: MatDialogRef<DialogContent>,
+    private patientService: PatientService
   ) {}
 
   closeDialog(): void {
@@ -74,12 +108,39 @@ export class DialogContent {
   }
 
   calculateTimeSpent(): string {
-    const alertDateTime = new Date(`${this.data.date} ${this.data.hour}`);
-    const attendedDateTime = new Date(this.data.caregiverAttendedDate);
+    const alertDateTime = new Date(`${this.data.generatedDate}`);
+    const attendedDateTime = new Date(this.data.attendingDate);
     
     const timeDiff = attendedDateTime.getTime() - alertDateTime.getTime(); 
     const minutes = Math.floor((timeDiff / 1000) / 60); 
     
     return `${minutes} minutes`; 
   }
+
+  getAlertType(type: string): string {
+    console.log('Alert type:', type); 
+    switch(type) {
+      case 'HIGH_HEART_RATE': return 'High heart rate';
+      case 'LOW_HEART_RATE': return 'Low heart rate';
+      case 'HIGH_TEMPERATURE': return 'High temperature';
+      case 'LOW_TEMPERATURE': return 'Low temperature';
+      case 'NORMAL_METRICS': return 'Normal metrics';
+      default: return 'Unknown alert type';
+    }
+  }
+
+  getDate(dateTime: string): string {
+    return dateTime.split('T')[0]; 
+  }
+
+  getTime(dateTime: string): string {
+    return dateTime.split('T')[1].split('.')[0]; 
+  }
+
+  getPatientName(patientId: string): Observable<string> {
+    return this.patientService.getPatient(patientId).pipe(
+      map(patient => `${patient?.name} ${patient?.lastName}` || 'Unknown patient')
+    );
+  }
 }
+

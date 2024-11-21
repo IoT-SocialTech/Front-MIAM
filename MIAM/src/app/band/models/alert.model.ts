@@ -1,11 +1,11 @@
 export interface Alert {
-    date: string;
-    hour: string;
-    patient: string;
-    alertType: string;
+    id: string;
+    reportType: string;
+    generatedDate: string;
+    attendingDate: string;
     description: string;
-    caregiver: string;
     actions: string;
-    caregivernotes: string;
-    caregiverAttendedDate: string;
-  }
+    caregiverNotes: string;
+    patientId: string;
+    caregiverId:string;
+    }

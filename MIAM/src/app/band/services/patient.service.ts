@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { Patient } from '../models/patient.model';
 import { environment } from '../../../environments/environment';
 
@@ -34,19 +34,36 @@ export class PatientService {
   }
 
   // Obtener un paciente por ID
-  getPatient(id: string): Observable<Patient> {
+  getPatient(id: string): Observable<any> {
     const headers = this.getAuthHeaders(); 
-    return this.http.get<Patient>(`${this.apiUrl}/${id}`, { headers }).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.get<any>(`${this.apiUrl}/${id}`, { headers }).pipe(
+      map(patient => { 
+        if (patient) {
+          console.log('Patient retrieved successfully', patient);
+          return patient.data;
+        } else {
+          throw new Error('No patient found');
+        }
+      }
+    ),
+    ); 
   }
 
   // Crear un nuevo paciente
-  addPatient(patient: any): Observable<Patient> {
+  addPatient(patient: any): Observable<any> {
     const headers = this.getAuthHeaders(); 
-    return this.http.post<Patient>(this.apiUrl, patient, { headers }).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.post<any>(this.apiUrl, patient, { headers }).pipe(
+      map(response => {
+      if (response.status === 'success' && response.data) { 
+        console.log('Patient retrieved successfully');
+        return response.data;
+      
+      } else {
+        throw new Error('No patient found');
+      }
+    }),
+    catchError(this.handleError)
+  );  
   }
 
   // Actualizar un paciente existente
