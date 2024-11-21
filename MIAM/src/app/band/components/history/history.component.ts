@@ -36,14 +36,33 @@ export class HistoryComponent implements OnInit {
   
 
   private loadAlerts(): void {
-    this.reportHistoryService.getReportsByCaregiverId(this.caregiverId).subscribe({
-      next: (data: Alert[]) => {
-        this.alerts.data = data; 
-      },
-      error: (err) => {
-        console.error('Error fetching alerts:', err);
+    const caregiverId = parseInt(localStorage.getItem('caregiverId') || '', 10);
+
+  this.reportHistoryService.getReportsByCaregiverId(caregiverId.toString()).subscribe({
+    next: (response: Alert[]) => {
+      if (Array.isArray(response)) {
+        // Asignar directamente las alertas sin filtrar
+        this.alerts.data = response;
+
+        // Reemplazar patientId con patientName para cada alerta
+        response.forEach((alert: Alert) => {
+          this.getPatientName(alert.patientId).subscribe(
+            (patientName) => {
+              alert.patientId = patientName; // Cambia el patientId por el nombre del paciente
+            },
+            (error) => {
+              console.error('Error fetching patient name for alert:', error);
+            }
+          );
+        });
+      } else {
+        console.error('Unexpected response format. Expected an array of alerts.');
       }
-    });
+    },
+    error: (err) => {
+      console.error('Error loading alerts:', err);
+    }
+  });
   }
 
   downloadReport(): void {
@@ -83,7 +102,9 @@ export class HistoryComponent implements OnInit {
 
   getPatientName(patientId: string): Observable<string> {
     return this.patientService.getPatient(patientId).pipe(
-      map(patient => `${patient?.name} ${patient?.lastName}` || 'Unknown patient')
+      map(patient => {
+        return `${patient?.name || 'Unknown'} ${patient?.lastName || 'Unknown'}`;
+      })
     );
   }
 }
@@ -139,7 +160,9 @@ export class DialogContent {
 
   getPatientName(patientId: string): Observable<string> {
     return this.patientService.getPatient(patientId).pipe(
-      map(patient => `${patient?.name} ${patient?.lastName}` || 'Unknown patient')
+      map(patient => {
+        return `${patient?.name || 'Unknown'} ${patient?.lastName || 'Unknown'}`;
+      })
     );
   }
 }

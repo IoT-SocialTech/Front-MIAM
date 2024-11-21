@@ -20,7 +20,7 @@
       <!-- Paciente -->
       <ng-container matColumnDef="patient">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Patient</mat-header-cell>
-        <mat-cell *matCellDef="let alert">{{ getPatientName("18") }}</mat-cell>
+        <mat-cell *matCellDef="let alert">{{ alert.patientId }}</mat-cell>
       </ng-container>
   
       <!-- Tipo de Alerta -->
