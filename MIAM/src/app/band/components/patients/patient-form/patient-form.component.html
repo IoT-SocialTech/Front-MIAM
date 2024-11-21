@@ -1,67 +1,87 @@
-<h2 mat-dialog-title>Crear Paciente y Relativo</h2>
-<form (ngSubmit)="createPatient()" [formGroup]="patientForm">
-  <!-- Campos del paciente -->
-  <mat-form-field>
-    <mat-label>Email del paciente</mat-label>
-    <input matInput formControlName="email" required>
-  </mat-form-field>
+<div class="create-patient-form">
+  <h2 mat-dialog-title>Create New Patient</h2>
+  
+  <!-- Único formulario -->
+  <form (ngSubmit)="createPatient()" [formGroup]="patientForm" class="patient-form">
+    <h3>Patient</h3>
 
-  <mat-form-field>
-    <mat-label>Teléfono del paciente</mat-label>
-    <input matInput formControlName="phoneNumber" required>
-  </mat-form-field>
+    <div class="form-row">
+      <mat-form-field class="half-width">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" required>
+      </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>Nombre del paciente</mat-label>
-    <input matInput formControlName="name" required>
-  </mat-form-field>
+      <mat-form-field class="half-width">
+        <mat-label>Phone</mat-label>
+        <input matInput formControlName="phoneNumber" required>
+      </mat-form-field>
+    </div>
 
-  <mat-form-field>
-    <mat-label>Apellido del paciente</mat-label>
-    <input matInput formControlName="lastName" required>
-  </mat-form-field>
+    <div class="form-row">
+      <mat-form-field class="half-width">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" required>
+      </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>Dirección</mat-label>
-    <input matInput formControlName="address" required>
-  </mat-form-field>
+      <mat-form-field class="half-width">
+        <mat-label>Last Name</mat-label>
+        <input matInput formControlName="lastName" required>
+      </mat-form-field>
+    </div>
 
-  <mat-form-field>
-    <mat-label>Fecha de nacimiento</mat-label>
-    <input matInput formControlName="birthdate" type="date" required>
-  </mat-form-field>
-</form>
+    <div class="form-row">
+      <mat-form-field class="half-width">
+        <mat-label>Address</mat-label>
+        <input matInput formControlName="address" required>
+      </mat-form-field>
 
-<!-- Formulario de relativo -->
-<form [formGroup]="relativeForm">
-  <h3>Información del Relativo</h3>
-  <mat-form-field>
-    <mat-label>Email del relativo</mat-label>
-    <input matInput formControlName="relativeEmail" required>
-  </mat-form-field>
+      <mat-form-field class="half-width">
+        <mat-label>Birth Date</mat-label>
+        <input matInput formControlName="birthdate" type="date" required>
+      </mat-form-field>
+    </div>
 
-  <mat-form-field>
-    <mat-label>Teléfono del relativo</mat-label>
-    <input matInput formControlName="relativePhoneNumber" required>
-  </mat-form-field>
+    <hr>
 
-  <mat-form-field>
-    <mat-label>Nombre del relativo</mat-label>
-    <input matInput formControlName="relativeName" required>
-  </mat-form-field>
+    <h3>Relative</h3>
 
-  <mat-form-field>
-    <mat-label>Apellido del relativo</mat-label>
-    <input matInput formControlName="relativeLastName" required>
-  </mat-form-field>
+    <div class="form-row">
+      <mat-form-field class="half-width">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="relativeEmail" required>
+      </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>Relación</mat-label>
-    <input matInput formControlName="relationship" required>
-  </mat-form-field>
-</form>
+      <mat-form-field class="half-width">
+        <mat-label>Phone</mat-label>
+        <input matInput formControlName="relativePhoneNumber" required>
+      </mat-form-field>
+    </div>
 
-<div mat-dialog-actions>
-  <button mat-button (click)="closeDialog()">Cancelar</button>
-  <button mat-button type="submit" [disabled]="patientForm.invalid || relativeForm.invalid">Guardar</button>
+    <div class="form-row">
+      <mat-form-field class="half-width">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="relativeName" required>
+      </mat-form-field>
+
+      <mat-form-field class="half-width">
+        <mat-label>Last Name</mat-label>
+        <input matInput formControlName="relativeLastName" required>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field class="half-width">
+        <mat-label>Relationship to Patient</mat-label>
+        <input matInput formControlName="relationship" required>
+      </mat-form-field>
+    </div>
+
+    <!-- Acciones de los botones -->
+    <div mat-dialog-actions>
+      <button class="cancel-button" type="button" (click)="closeDialog()">Cancel</button>
+      <button mat-button class="save-button" type="submit" [disabled]="patientForm.invalid">Save</button>
+    </div>
+
+  </form>
+
 </div>

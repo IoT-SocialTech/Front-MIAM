@@ -12,7 +12,6 @@ import { AccountService } from 'src/app/band/services/account.service';
 })
 export class PatientFormComponent {
   patientForm: FormGroup;
-  relativeForm: FormGroup;
 
   constructor(
     private fb: FormBuilder,
@@ -30,26 +29,24 @@ export class PatientFormComponent {
       lastName: ['', Validators.required],
       address: ['', Validators.required],
       birthdate: ['', Validators.required],
-    });
-
-    this.relativeForm = this.fb.group({
       relativeEmail: ['', [Validators.required, Validators.email]],
       relativePhoneNumber: ['', Validators.required],
       relativeName: ['', Validators.required],
       relativeLastName: ['', Validators.required],
       relationship: ['', Validators.required],
     });
+
   }
 
   createRelative(): Promise<number> {
     return new Promise((resolve, reject) => {
       // Datos de la cuenta del familiar
       const relativeAccountData = {
-        email: this.relativeForm.value.relativeEmail,
+        email: this.patientForm.value.relativeEmail,
         password: 'Pass123.', // Contraseña fija para el familiar
-        phoneNumber: this.relativeForm.value.relativePhoneNumber,
-        subscription: 0, // Suscripción fija
-        role: 2, // Rol fijo para el familiar
+        phoneNumber: this.patientForm.value.relativePhoneNumber,
+        subscription: 1, // Suscripción fija
+        role: 3, // Rol fijo para el familiar
         active: true
       };
   
@@ -61,15 +58,16 @@ export class PatientFormComponent {
   
           // Crear al familiar
           const newRelative = {
-            name: this.relativeForm.value.relativeName,
-            lastName: this.relativeForm.value.relativeLastName,
-            relationship: this.relativeForm.value.relationship,
+            name: this.patientForm.value.relativeName,
+            lastName: this.patientForm.value.relativeLastName,
+            relationship: this.patientForm.value.relationship,
             account: relativeAccountId
           };
   
           this.relativeService.createRelative(newRelative).subscribe(
             (relativeResponse) => {
               console.log('Familiar creado con éxito:', relativeResponse);
+              console.log('ID del familiar:', relativeResponse.id);
               alert('Familiar creado con éxito');
               resolve(relativeResponse.id); // Devuelve el ID del familiar
             },
@@ -91,7 +89,7 @@ export class PatientFormComponent {
   
 
   createPatient(): void {
-    if (this.patientForm.invalid || this.relativeForm.invalid) {
+    if (this.patientForm.invalid) {
       return;
     }
   
@@ -100,7 +98,7 @@ export class PatientFormComponent {
       email: this.patientForm.value.email,
       password: 'Pass123.', // Contraseña fija
       phoneNumber: this.patientForm.value.phoneNumber,
-      subscription: 0, // Suscripción fija
+      subscription: 1, // Suscripción fija
       role: 1, // Rol fijo para el paciente
       active: true
     };
@@ -110,8 +108,9 @@ export class PatientFormComponent {
         const patientAccountId = accountResponse.id; // id del account del paciente
         
         try {
-          const relativeAccountId = await this.createRelative(); // Esperamos a que el familiar sea creado
-  
+          const relativeId = await this.createRelative(); // Esperamos a que el familiar sea creado
+          console.log('Recuperando ID del familiar:', relativeId);
+
           // Crear al paciente
           const newPatient = {
             name: this.patientForm.value.name,
@@ -119,7 +118,7 @@ export class PatientFormComponent {
             address: this.patientForm.value.address,
             birthdate: this.patientForm.value.birthdate,
             account: patientAccountId,
-            relative: relativeAccountId,
+            relative: relativeId,
             caregiverIds: [
               this.data.caregiverId
             ]

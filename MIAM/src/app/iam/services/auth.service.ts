@@ -73,12 +73,18 @@ export class AuthService {
   
 
   isLoggedIn(): boolean {
-    return this.isAuthenticated;
+    const token = localStorage.getItem('token');
+    const caregiverId = localStorage.getItem('caregiverId');
+    const accountId   = localStorage.getItem('accountId');
+    
+    return !!token && !!caregiverId && !!accountId;
   }
 
   logout(): void {
     this.isAuthenticated = false;
     localStorage.removeItem('token'); 
+    localStorage.removeItem('caregiverId');
+    localStorage.removeItem('accountId');
     this.router.navigate(['/login']);
   }
 

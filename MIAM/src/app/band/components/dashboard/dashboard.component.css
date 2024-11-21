@@ -160,7 +160,7 @@ canvas {
 }
 
 .alert-left p {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   margin: 0;
   padding: 5px;
@@ -210,3 +210,36 @@ mat-menu button {
   font-size: 14px;
   color: #4f4f4f;
 }
+
+mat-expansion-panel {
+  background-color: #F2F7FC !important;
+  color: #4F4F4F !important;
+  border-radius: 4px; 
+  margin-bottom: 10px;
+  box-shadow: none !important; 
+}
+
+
+mat-expansion-panel-header {
+  background-color: #F2F7FC !important; 
+  color: #4F4F4F !important;
+  font-weight: bold;
+}
+
+mat-panel-title,
+mat-panel-description {
+  color: #4F4F4F !important;
+}
+
+mat-expansion-panel.mat-expanded {
+  background-color: white !important; 
+}
+
+mat-expansion-panel-content,
+mat-expansion-panel-body {
+  background-color: white !important; 
+  color: #4F4F4F !important; 
+  margin: 20px 0 0 0 !important; 
+  padding: 10px; 
+}
+

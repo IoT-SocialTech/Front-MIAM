@@ -1,66 +1,96 @@
 .medication-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    color: #4f4f4f;
-    padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  color: #4f4f4f;
+  padding: 20px;
 }
 
-.medication-container h2{
-    text-align: left;
+.medication-container h2 {
+text-align: left;
+padding: 0;  
 }
 
 .medication-form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    color: #4f4f4f;
-    font-family: Inter, sans-serif;
-  }
-  
-  .form-row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 16px;
-  }
-  
-  .form-row label {
-    color: #4f4f4f;
-  }
-  
-  mat-form-field {
-    flex: 1;
-  }
-  
-  mat-checkbox {
-    flex: 1;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: #4f4f4f;
+  font-family: Inter, sans-serif;
+}
 
-  .save-button {
-    width: auto;
-    padding: 0.5rem;
-    align-items: center;
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    background-color: #5C9BD5;
-    border-color: #5C9BD5;
-    color: #ffffff;
-    font-size: 14px;
-    box-shadow: none;
-    border-style: none;
-    font-family: Inter, sans-serif;
-    transition: all 0.5s ease;
-    transform: scale(1); 
-    margin-left: auto; 
-  }
-  
-  .save-button{
-    width: 50px;
-  }
-  
-  .save-button:active {
-    transform: scale(0.9); 
-  }
+.form-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
+
+.form-row label {
+  color: #4f4f4f;
+  width: 100px;
+}
+
+mat-form-field {
+  flex: 1;
+}
+
+mat-checkbox {
+  flex: 1;
+}
+
+.save-button {
+  width: 100px;
+  padding: 1rem;
+  align-items: center;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  background-color: #5C9BD5;
+  border-color: #5C9BD5;
+  color: #ffffff;
+  font-size: 14px;
+  box-shadow: none;
+  border-style: none;
+  font-family: Inter, sans-serif;
+  transition: all 0.5s ease;
+  transform: scale(1); 
+  margin-left: auto; 
+  font-size: medium;
+}
+
+.save-button:hover{
+  cursor: pointer;
+}
+
+.save-button:active {
+  transform: scale(0.9); 
+}
+
+
+
+.cancel-button{
+  width: auto;
+  padding: 1rem;
+  align-items: center;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  color: #959595;
+  background-color: #ffffff;
+  font-size: 14px;
+  box-shadow: none;
+  border-style: none;
+  font-family: Inter, sans-serif;
+  transition: all 0.5s ease;
+  transform: scale(1); 
+  margin-left: auto; 
+  font-size: medium;
+}
+
+.cancel-button:hover {
+  color:#4f4f4f;
+  text-decoration: underline;
+  cursor: pointer;
+}

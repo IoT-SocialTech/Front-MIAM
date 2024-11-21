@@ -1,8 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Relative } from '../models/relative.model';
  
 @Injectable({
   providedIn: 'root'
@@ -25,9 +24,30 @@ export class RelativeService {
   }
 
   // Crear un familiar
-  createRelative(relative: any): Observable<Relative> {
+  createRelative(relative: any): Observable<any> {
     const headers = this.getAuthHeaders(); 
-    return this.http.post<Relative>(this.apiUrl, relative, { headers }).pipe(
+    return this.http.post<any>(this.apiUrl, relative, { headers }).pipe(
+      map(response => {
+        if (response.status === 'SUCCESS' && response.data) {
+          return response.data; 
+        } else {
+          throw new Error('No medication alerts found'); 
+        }
+      }),
+      catchError(this.handleError)
+    );
+  }
+
+  gerRelativeByAccountID(accountID: number): Observable<any> {
+    const headers = this.getAuthHeaders(); 
+    return this.http.get<any>(`${this.apiUrl}/account/${accountID}`, { headers }).pipe(
+      map(response => {
+        if (response.status === 'SUCCESS' && response.data) {
+          return response.data; 
+        } else {
+          throw new Error('No medication alerts found'); 
+        }
+      }),
       catchError(this.handleError)
     );
   }

@@ -1,0 +1,87 @@
+.create-patient-form {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    color: #4f4f4f;
+  }
+  
+  .patient-form, .relative-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-row {
+    display: flex;
+    flex-wrap: wrap; /* Permite que los campos se ajusten si no caben en una fila */
+    gap: 1.5rem; /* Espacio entre los campos */
+    justify-content: space-between;
+  }
+  
+  mat-form-field {
+    flex: 1 ; /* Hace que cada campo ocupe la mitad de la fila */
+  }
+  
+  .create-patient-form h2 {
+    text-align: left;
+    padding: 0;
+  }
+  
+  .save-button {
+    width: 100px;
+    padding: 1rem;
+    align-items: center;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    background-color: #5C9BD5;
+    border-color: #5C9BD5;
+    color: #ffffff;
+    font-size: 14px;
+    box-shadow: none;
+    border-style: none;
+    font-family: Inter, sans-serif;
+    transition: all 0.5s ease;
+    transform: scale(1); 
+    margin-left: auto;
+    font-size: medium;
+  }
+  
+  .save-button:hover {
+    cursor: pointer;
+  }
+  
+  .save-button:active {
+    transform: scale(0.9); 
+  }
+  
+  .cancel-button {
+    width: auto;
+    padding: 1rem;
+    align-items: center;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    color: #959595;
+    background-color: #ffffff;
+    font-size: 14px;
+    box-shadow: none;
+    border-style: none;
+    font-family: Inter, sans-serif;
+    transition: all 0.5s ease;
+    transform: scale(1); 
+    margin-left: auto;
+    font-size: medium;
+  }
+  
+  .cancel-button:hover {
+    color: #4f4f4f;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  
+  hr {
+    border: none; 
+    border-top: 2px solid #F2F7FC; 
+    margin: 1rem 0;
+  }
+  

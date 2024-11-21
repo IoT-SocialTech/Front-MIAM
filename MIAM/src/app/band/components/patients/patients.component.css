@@ -264,3 +264,14 @@ mat-cell {
 .unstable {
   color: red;
 }
+
+.date-fetch{
+  font-size: small;
+  color: #959595;
+}
+
+
+.custom-spinner {
+  width: 30px; 
+  height: 30px;
+}

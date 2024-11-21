@@ -2,10 +2,9 @@ import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from '@angula
 import { PatientService } from '../../services/patient.service';  
 import { AccountService } from '../../services/account.service';
 import Chart from 'chart.js/auto';
-import { CaregiverService } from '../../services/caregiver.service';
 import { PatientCaregiverService } from '../../services/patient-caregiver.service';
 import { MedicationAlertsService } from '../../services/medication-alerts.service';
-import { forkJoin } from 'rxjs';
+import { forkJoin, map } from 'rxjs';
 import { Patient } from '../../models/patient.model';
 
 
@@ -106,37 +105,73 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // Obtener todas las alertas de medicación para todos los pacientes
   loadMedicationAlerts(): void {
-    this.allMedicationAlerts = []; // Limpiar las alertas previas
-
-    const allPatients = this.caregivers.flatMap(caregiver => caregiver.patients);
+    this.allMedicationAlerts = []; // Limpiar lista de alertas previas
+  
+    const allPatients = this.caregivers.flatMap(caregiver => caregiver.patients || []);
+  
+    console.log('All patients:', allPatients); 
+  
     const alertRequests = allPatients.map(patient =>
       this.medicationAlertService.getMedicationAlertsByPatientId(patient.id)
     );
-
-    // Usamos forkJoin para obtener todas las alertas de medicación en paralelo
+  
+    console.log('All alert requests:', alertRequests); 
+  
     forkJoin(alertRequests).subscribe(
       (alerts) => {
+        console.log('All alerts received:', alerts); 
+  
         alerts.forEach((alertData, index) => {
           const patient = allPatients[index];
-          this.allMedicationAlerts.push({
-            patientName: patient.name + ' ' + patient.lastName,
-            alerts: alertData 
-          });
+  
+          if (alertData && Array.isArray(alertData) && alertData.length > 0) {
+            // Filtrar las alertas donde 'taken' sea false
+            const filteredAlerts = alertData.filter(alert => alert.taken === false);
+  
+            if (filteredAlerts.length > 0) {
+              // Mapeamos solo las alertas no tomadas
+              this.allMedicationAlerts.push({
+                patientName: `${patient.name} ${patient.lastName}`,
+                patientId: patient.id,  
+                alerts: filteredAlerts.map(alert => ({
+                  id: alert.id,
+                  medicationName: alert.medicationName,
+                  dose: alert.dose,
+                  hour: alert.hour,
+                  taken: alert.taken
+                }))
+              });
+            }
+          } else {
+            console.error('Invalid alert data for patient:', patient.name, alertData);
+          }
         });
-        console.log('All medication alerts:', this.allMedicationAlerts);
+  
+        console.log('Filtered medication alerts:', this.allMedicationAlerts); 
       },
       (error) => {
         console.error('Error loading medication alerts:', error);
       }
     );
   }
+  
+  
+  
 
   markAsTaken(alert: any): void {
     // Logic to mark the alert as taken
     console.log('Marking alert as taken:', alert);
-    // Implement your logic here (e.g., updating the alert status, calling an API, etc.)
+    
+    this.medicationAlertService.editMedicationAlert(alert.id, true).subscribe(
+      (response) => {
+        console.log('Alert marked as taken:', response);
+        this.loadMedicationAlerts(); // Recargar las alertas
+      },
+      (error) => {
+        console.error('Error marking alert as taken:', error);
+      }
+    );
   }
 
   formatDate(date: Date): string {

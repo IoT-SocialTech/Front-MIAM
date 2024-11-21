@@ -176,3 +176,9 @@ hr {
   transform: scale(0.9); 
 }
 
+
+.custom-spinner {
+  width: 30px; 
+  height: 30px;
+}
+

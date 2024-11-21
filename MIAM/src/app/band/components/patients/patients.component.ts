@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { Patient } from '../../models/patient.model';
 import { PatientCaregiverService } from '../../services/patient-caregiver.service';
 import { MedicationAlertsService } from '../../services/medication-alerts.service';
-import { Caregiver } from '../../models/caregiver.model';
 import { MedicationAlertFormComponent } from './medication-alert-form/medication-alert-form.component';
 import { MatDialog } from '@angular/material/dialog';
 import { PatientService } from '../../services/patient.service';
 import { PatientCaregiver } from '../../models/patientCaregiver.model';
 import { PatientFormComponent } from './patient-form/patient-form.component';
+import { FeingClientService } from '../../services/feing-client.service';
+import * as moment from 'moment-timezone';
 
 @Component({
   selector: 'app-patients',
@@ -20,12 +21,17 @@ export class PatientsComponent implements OnInit {
   patientAge: number | null = null; 
   displayedAlerts: any[] = [];
   selectedCaregivers: PatientCaregiver[] = [];
+  temperature: any | null = null;
+  heartRate: any | null = null;
+  isLoading: boolean = true; 
 
   constructor(
     private patientCaregiverService: PatientCaregiverService, 
     private medicationAlertService: MedicationAlertsService, 
     private patientService: PatientService,
-    private dialog: MatDialog) {}
+    private feingClientService: FeingClientService,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     this.getPatients();
@@ -33,7 +39,7 @@ export class PatientsComponent implements OnInit {
 
   // Alertas de medicación
 
-  getPatientMedicationAlerts(){
+  getPatientMedicationAlerts() {
     if (this.selectedPatient)  {
       console.log('Fetching medication alerts for patient:', this.selectedPatient.patient.id);
       this.medicationAlertService.getMedicationAlertsByPatientId(this.selectedPatient.patient.id).subscribe(
@@ -74,8 +80,13 @@ export class PatientsComponent implements OnInit {
         caregiverId: localStorage.getItem('caregiverId')
       } 
     });
-  }
 
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.getPatients();
+      }
+    });
+  }
 
   deleteAlert(alert: any) {
     this.medicationAlertService.deleteMedicationAlert(alert.id).subscribe(
@@ -87,7 +98,7 @@ export class PatientsComponent implements OnInit {
       }
     );
   }
-  
+
   onCaregiverSelected(caregiver: string) {
     console.log('Selected caregiver:', caregiver);
   }
@@ -99,6 +110,8 @@ export class PatientsComponent implements OnInit {
   // Pacientes
 
   getPatients(): void {
+    this.isLoading = true; // Activar la animación de carga
+
     const caregiverId = localStorage.getItem('caregiverId'); 
     console.log('Caregiver ID:', caregiverId);
     if (caregiverId) { 
@@ -107,21 +120,25 @@ export class PatientsComponent implements OnInit {
           console.log('Data:', data);
           this.patients = data.map((item: any) =>  ({ patient: item.patient, caregiver: item.caregiver }));
           console.log('Patients:', this.patients);
+          this.isLoading = false; 
         },
         (error) => {
           console.error('Error fetching patients:', error);
+          this.isLoading = false; 
         }
       );
     } else {
       console.error('No caregiverId found in localStorage.'); 
+      this.isLoading = false;
     }
   }
 
   selectPatient(patient: PatientCaregiver): void {
     if (this.selectedPatient?.patient.id !== patient.patient.id) {
       this.selectedPatient = patient;
-      this.getPatientMedicationAlerts();
       this.patientAge = this.calculateAge(patient.patient.birthDate);
+      this.getPatientMedicationAlerts();
+      this.loadVitals("1");
       this.loadCaregiverForPatient(patient.patient.id);
     }
   }
@@ -141,7 +158,6 @@ export class PatientsComponent implements OnInit {
     }
   }
 
-
   calculateAge(birthDate: string): number {
     const birth = new Date(birthDate);
     const today = new Date();
@@ -149,7 +165,6 @@ export class PatientsComponent implements OnInit {
     let age = today.getFullYear() - birth.getFullYear();
     const monthDifference = today.getMonth() - birth.getMonth();
   
-    // Ajustar la edad si no ha llegado el cumpleaños este año
     if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birth.getDate())) {
       age--;
     }
@@ -170,10 +185,8 @@ export class PatientsComponent implements OnInit {
     );
   }
 
- 
   savePatient(): void {
     if (this.selectedPatient) {
-      // Asegurarnos de que todos los campos requeridos estén definidos
       const updatedPatient: Patient = {
         id: this.selectedPatient.patient.id || '', 
         name: this.selectedPatient.patient.name || '', 
@@ -185,7 +198,6 @@ export class PatientsComponent implements OnInit {
       };
 
       if (updatedPatient.id) {
-        // Si el paciente ya tiene un ID, actualizarlo
         this.patientService.updatePatient(updatedPatient).subscribe(
           () => {
             const index = this.patients.findIndex(p => p.patient.id === updatedPatient.id);
@@ -199,10 +211,8 @@ export class PatientsComponent implements OnInit {
           }
         );
       } else {
-        // Si no tiene ID, agregarlo
         this.patientService.addPatient(updatedPatient).subscribe(
           (newPatient) => {
-            //this.patients.push(newPatient);
             alert('Patient added successfully.');
           },
           (error) => {
@@ -213,20 +223,29 @@ export class PatientsComponent implements OnInit {
     }
   }
 
-/*
-  // Eliminar paciente
-  deletePatient(patient: Patient): void {
-    if (confirm('Are you sure you want to delete this patient?')) {
-      this.patientCaregiverService.deletePatient(patient.id).subscribe(
-        () => {
-          this.patients = this.patients.filter(p => p.id !== patient.id);
-          this.selectedPatient = undefined;
-          alert('Patient deleted successfully.');
-        },
-        (error) => {
-          console.error('Error deleting patient:', error);
-        }
-      );
-    }
-  }*/
+  loadVitals(patientId: string): void {
+    this.feingClientService.getTemperature(patientId).subscribe(
+      (temperatureData) => {
+        console.log('Temperature data:', temperatureData);
+        this.temperature = temperatureData; 
+      },
+      (error) => {
+        console.error('Error fetching temperature:', error);
+      }
+    );
+
+    this.feingClientService.getHeartRate(patientId).subscribe(
+      (heartRateData) => {
+        console.log('Heart rate data:', heartRateData);
+        this.heartRate = heartRateData; 
+      },
+      (error) => {
+        console.error('Error fetching heart rate:', error);
+      }
+    );
+  }
+
+  formatDateWithMoment(date: string): string {
+    return moment(date).tz("America/Lima").format('HH:mm:ss DD/MM/YYYY');
+  }
 }

@@ -3,9 +3,6 @@
     <div class="dashboard-column">
       <div class="dashboard-alerts">
         <h2>Alerts</h2>
-        
-        
-        
       </div>
       
       <div class="dashboard-caregivers">
@@ -37,31 +34,37 @@
 
         <div class="dashboard-medication">
           <h2>Medication Alerts</h2>
-          <!-- Verificar que `allMedicationAlerts` tiene elementos y luego acceder al primero -->
-          <div *ngFor="let medicationAlert of allMedicationAlerts[0]?.alerts">
-            <div class="alert-card">
-              <div class="alert-border">
-                <div class="alert-left">
-                  <p>{{ medicationAlert.hour }}</p>
-                </div>
-                <div class="alert-right">
-                  <div class="patient-info">
-                    <p class="patient-name">{{ allMedicationAlerts[0]?.patientName }} </p>
+          <!-- Iterar sobre todos los pacientes -->
+          <div *ngFor="let medicationAlertGroup of allMedicationAlerts">
+            <!-- Iterar sobre las alertas de cada paciente -->
+            <div *ngFor="let medicationAlert of medicationAlertGroup.alerts">
+              <div class="alert-card">
+                <div class="alert-border">
+                  <div class="alert-left">
+                    <p>{{ medicationAlert.hour }}</p>
                   </div>
-                  <div class="medication-info">
-                    <p class="medication-dose">{{ medicationAlert.medicationName }} {{ medicationAlert.dose }} mg</p>
+                  <div class="alert-right">
+                    <div class="patient-info">
+                      <!-- Mostrar el nombre del paciente de la iteración actual -->
+                      <p class="patient-name">{{ medicationAlertGroup.patientName }}</p>
+                    </div>
+                    <div class="medication-info">
+                      <!-- Mostrar nombre del medicamento y dosis -->
+                      <p class="medication-dose">{{ medicationAlert.medicationName }} {{ medicationAlert.dose }} mg</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="menu">
-                <mat-icon>more_vert</mat-icon>
-                <mat-menu #menu="matMenu">
-                  <button mat-menu-item (click)="markAsTaken(medicationAlert)">Mark as Taken</button>
-                </mat-menu>
+                <div class="menu">
+                  <mat-icon [matMenuTriggerFor]="menu">more_vert</mat-icon>
+                  <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="markAsTaken(medicationAlert)">Mark as Taken</button>
+                  </mat-menu>
+                </div>
               </div>
             </div>
           </div>
         </div>
+        
       </div>
 
       <div class="dashboard-vitals">

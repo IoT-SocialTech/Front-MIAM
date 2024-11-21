@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, of, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { MedicationAlert } from '../models/medicationalert.model';
 
@@ -13,7 +13,6 @@ export class MedicationAlertsService {
 
   constructor(private http: HttpClient) {}
 
-  // Obtener los encabezados de autorización
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('token'); 
     if (!token) {
@@ -24,27 +23,35 @@ export class MedicationAlertsService {
     });
   }
 
-  // Obtener todas las medicationAlerts según el ID de un paciente
-  getMedicationAlertsByPatientId(id: string): Observable<MedicationAlert[]> {
-    const headers = this.getAuthHeaders(); 
-
+  getMedicationAlertsByPatientId(id: string): Observable<any[]> {
+    const headers = this.getAuthHeaders();
+    console.log('Sending request to:', `${this.apiUrl}/patient/${id}`);
+    
     return this.http.get<any>(`${this.apiUrl}/patient/${id}`, { headers }).pipe(
       map(response => {
+        // Verificar que la respuesta contiene un campo 'status' y 'data'
         if (response.status === 'SUCCESS' && response.data) {
-          return response.data; 
+          return response.data; // Retornar las alertas
         } else {
-          throw new Error('No medication alerts found'); 
+          // Si la respuesta no es exitosa o no hay datos, puedes retornar un array vacío o lanzar un error
+          console.error('No medication alerts found or invalid status:', response);
+          return []; // Retornar un array vacío si no hay alertas
         }
       }),
-      catchError(this.handleError)
+      catchError((error) => {
+        // Manejar cualquier error que se haya producido durante la solicitud
+        console.error('Error fetching medication alerts:', error);
+        return of([]); // Retornar un array vacío en caso de error
+      })
     );
   }
   
+
   // Crear una alerta de medicación
   createMedicationAlert(alert: any): Observable<MedicationAlert> {
-    const headers = this.getAuthHeaders(); 
+    const headers = this.getAuthHeaders();
 
-    return this.http.post<any>(this.apiUrl, alert, { headers }).pipe(
+    return this.http.post<any>(this.apiUrl, alert, {headers}).pipe(
       map(response => {
         if (response.status === 'SUCCESS' && response.data) {
           return response.data; 
@@ -56,10 +63,10 @@ export class MedicationAlertsService {
     );
   }
 
-  editMedicationAlert(alert: MedicationAlert): Observable<MedicationAlert> {
+  editMedicationAlert(id: string, status: boolean): Observable<MedicationAlert> {
     const headers = this.getAuthHeaders(); 
-
-    return this.http.put<any>(`${this.apiUrl}/${alert.id}`, alert, { headers }).pipe(
+    const body = { "taken": status };
+    return this.http.put<any>(`${this.apiUrl}/${id}`, body, { headers }).pipe(
       map(response => {
         if (response.status === 'SUCCESS' && response.data) {
           return response.data; 
@@ -70,7 +77,7 @@ export class MedicationAlertsService {
       catchError(this.handleError)
     );
   }
-  
+
   // Eliminar una alerta de medicación
   deleteMedicationAlert(id: string): Observable<any> {
     const headers = this.getAuthHeaders(); 
